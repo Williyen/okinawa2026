@@ -414,11 +414,14 @@
             
             <div class="edit-hint">
                 💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
-                📋 <strong>狀態說明</strong>：系統會根據當前時間自動判斷工作狀態<br>
+                📋 <strong>狀態說明</strong>：<br>
                 • ⏳ 待上班 - 班次開始前<br>
                 • 💼 上班中 - 班次時間內<br>
                 • 👋 已下班 - 班次結束後<br>
+                • 🤒 請假 - 手動設置請假狀態<br>
                 • 🚫 未排班 - 休息日<br>
+                <br>
+                📌 <strong>提醒</strong>：今日狀況可手動編輯，手動設置後不會被自動覆蓋<br>
                 
                 <button id="updateWeekBtn" class="update-week-btn" onclick="updateToNextWeek()">
                     📅 更新為下週日期
@@ -436,6 +439,7 @@
 
     <script>
         let editMode = false;
+        let todayStatusManuallySet = false; // 記錄今日狀況是否被手動設置
         // 編輯密碼設定（可修改為您想要的密碼）
         const editPassword = '1234';
 
@@ -523,6 +527,9 @@
                     firstRow.classList.add('today');
                 }
             }
+            
+            // 重置手動設置標記，因為今日可能已改變
+            todayStatusManuallySet = false;
         }
 
         function updateTodayStatus() {
@@ -541,10 +548,12 @@
             
             const workStatus = determineWorkStatus(scheduleTime, currentTime);
             
-            // 更新表格中的狀態（確保今日狀態會被更新）
-            todayStatusEl.textContent = workStatus.status;
+            // 只有在今日狀況沒有被手動設置時才自動更新
+            if (!todayStatusManuallySet) {
+                todayStatusEl.textContent = workStatus.status;
+            }
             
-            // 更新主要狀態顯示
+            // 更新主要狀態顯示（始終根據班次時間自動判斷）
             const now = new Date();
             const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
             
@@ -618,16 +627,10 @@
                 timeEl.onclick = () => editTime(timeEl);
             });
 
-            // 讓狀況可編輯（除了今日狀況，今日狀況由系統自動判斷）
+            // 讓所有狀況都可編輯（包括今日狀況）
             document.querySelectorAll('.schedule-status').forEach(statusEl => {
-                // 檢查是否為今日所在行的狀態
-                const row = statusEl.closest('tr');
-                const isToday = row && row.classList.contains('today');
-                
-                if (!isToday) { // 非今日的狀況可以手動編輯
-                    statusEl.classList.add('editable-time');
-                    statusEl.onclick = () => editStatus(statusEl);
-                }
+                statusEl.classList.add('editable-time');
+                statusEl.onclick = () => editStatus(statusEl);
             });
         }
 
@@ -659,6 +662,9 @@
                     // 更新當日高亮和狀態
                     updateTodayHighlight();
                     updateTodayStatus();
+                    
+                    // 重置手動設置標記，因為日期可能已改變
+                    todayStatusManuallySet = false;
                 }
             };
             
@@ -704,8 +710,9 @@
                         }
                     }
                     
-                    // 如果修改的是今日班次，立即更新狀態
+                    // 如果修改的是今日班次，重置手動設置標記並立即更新狀態
                     if (isToday) {
+                        todayStatusManuallySet = false; // 重置手動設置標記
                         updateTodayStatus();
                     }
                 }
@@ -738,6 +745,13 @@
                 statusEl.textContent = select.value;
                 statusEl.style.display = 'inline';
                 select.remove();
+                
+                // 檢查是否編輯的是今日狀況
+                const row = statusEl.closest('tr');
+                const isToday = row && row.classList.contains('today');
+                if (isToday) {
+                    todayStatusManuallySet = true; // 標記今日狀況已被手動設置
+                }
             };
             
             statusEl.style.display = 'none';
@@ -800,6 +814,9 @@
             // 重新檢查當日高亮和狀態
             updateTodayHighlight();
             updateTodayStatus();
+            
+            // 重置手動設置標記
+            todayStatusManuallySet = false;
             
             // 顯示更新成功訊息
             const updateBtn = document.getElementById('updateWeekBtn');
