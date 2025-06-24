@@ -123,11 +123,18 @@
             100% { transform: scale(1); }
         }
         
-        .status-on {
+        .status-working {
             background: linear-gradient(135deg, #d4edda, #c3e6cb);
             color: #155724;
             border: 2px solid #27ae60;
             box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+        
+        .status-waiting {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 2px solid #ffc107;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
         }
         
         .status-off {
@@ -137,53 +144,11 @@
             box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
         }
         
-        .control-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
-        
-        .btn-checkin {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-        }
-        
-        .btn-checkin:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
-        }
-        
-        .btn-checkout {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-            color: white;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-        }
-        
-        .btn-checkout:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
-        }
-        
-        .btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-            opacity: 0.6;
-            transform: none !important;
-            box-shadow: none !important;
+        .status-nowork {
+            background: linear-gradient(135deg, #e2e3e5, #d6d8db);
+            color: #383d41;
+            border: 2px solid #6c757d;
+            box-shadow: 0 0 20px rgba(108, 117, 125, 0.3);
         }
         
         .current-time {
@@ -293,6 +258,22 @@
             border-left: 4px solid #8B0000;
         }
         
+        .edit-controls {
+            background: rgba(248, 249, 250, 0.9);
+            border: 2px solid rgba(139, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .edit-controls h3 {
+            margin: 0 0 15px 0;
+            color: #8B0000;
+            font-size: 16px;
+            text-align: center;
+        }
+        
         .update-week-btn {
             background: linear-gradient(135deg, #B22222, #8B0000);
             color: white;
@@ -332,16 +313,6 @@
                 margin: 10px;
             }
             
-            .control-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 200px;
-            }
-            
             .schedule-table th,
             .schedule-table td {
                 padding: 8px 4px;
@@ -367,17 +338,8 @@
         </div>
         
         <div class="control-panel">
-            <div id="statusDisplay" class="status-display status-off">
-                🔴 目前狀態：已下班
-            </div>
-            
-            <div class="control-buttons">
-                <button id="checkinBtn" class="btn btn-checkin" onclick="checkIn()">
-                    ⏰ 上班打卡
-                </button>
-                <button id="checkoutBtn" class="btn btn-checkout" onclick="checkOut()" disabled>
-                    🏃‍♂️ 下班打卡
-                </button>
+            <div id="statusDisplay" class="status-display status-waiting">
+                ⏳ 目前狀態：待上班
             </div>
             
             <div class="current-time">
@@ -440,32 +402,39 @@
             </tbody>
         </table>
         
-        <div id="editHint" class="edit-hint" style="display: none;">
-            💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
-            📋 <strong>狀態說明</strong>：⏳ 待上班(未到時間) → 💼 上班中(已打卡) → 👋 已下班(已下班) / 🤒 請假(未打卡) / 🚫 未排班(無班次)<br>
-            <button id="updateWeekBtn" class="update-week-btn" onclick="updateToNextWeek()">
-                📅 更新為下週日期
-            </button>
-        </div>
-        
-        <div class="notes">
-            <strong>📌 使用說明：</strong><br>
-            • 點擊「上班打卡」/「下班打卡」更新當日狀態<br>
-            • 實際情況會根據班次時間和打卡狀況動態顯示<br>
-            • 編輯班表功能有密碼保護，防止誤改
-        </div>
-        
         <div class="edit-mode" style="text-align: center; margin-top: 20px;">
             <button id="editToggle" class="toggle-btn" onclick="toggleEditMode()">
                 🔒 開啟編輯模式
             </button>
             <div style="font-size: 11px; color: #6c757d; margin-top: 8px;">需要密碼驗證</div>
         </div>
+        
+        <div id="editControls" class="edit-controls" style="display: none;">
+            <h3>📝 編輯控制台</h3>
+            
+            <div class="edit-hint">
+                💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
+                📋 <strong>狀態說明</strong>：系統會根據當前時間自動判斷工作狀態<br>
+                • ⏳ 待上班 - 班次開始前<br>
+                • 💼 上班中 - 班次時間內<br>
+                • 👋 已下班 - 班次結束後<br>
+                • 🚫 未排班 - 休息日<br>
+                
+                <button id="updateWeekBtn" class="update-week-btn" onclick="updateToNextWeek()">
+                    📅 更新為下週日期
+                </button>
+            </div>
+        </div>
+        
+        <div class="notes">
+            <strong>📌 使用說明：</strong><br>
+            • 系統會根據當前時間和班次時間自動更新狀態<br>
+            • 開啟編輯模式可修改班表內容<br>
+            • 編輯班表功能有密碼保護，防止誤改
+        </div>
     </div>
 
     <script>
-        let isWorking = false;
-        let checkinTime = null;
         let editMode = false;
         // 編輯密碼設定（可修改為您想要的密碼）
         const editPassword = '1234';
@@ -478,6 +447,40 @@
             '🚫 未排班'
         ];
 
+        function parseTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes; // 轉換為分鐘數
+        }
+
+        function getCurrentTimeInMinutes() {
+            const now = new Date();
+            return now.getHours() * 60 + now.getMinutes();
+        }
+
+        function determineWorkStatus(scheduleTime, currentTime) {
+            // 如果是休息日
+            if (scheduleTime.includes('🚫') || scheduleTime === '') {
+                return { status: '🚫 未排班', className: 'status-nowork' };
+            }
+            
+            // 解析班次時間（如：08:00-17:00）
+            const timeMatch = scheduleTime.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
+            if (!timeMatch) {
+                return { status: '🚫 未排班', className: 'status-nowork' };
+            }
+            
+            const startTime = parseTime(`${timeMatch[1]}:${timeMatch[2]}`);
+            const endTime = parseTime(`${timeMatch[3]}:${timeMatch[4]}`);
+            
+            if (currentTime < startTime) {
+                return { status: '⏳ 待上班', className: 'status-waiting' };
+            } else if (currentTime >= startTime && currentTime < endTime) {
+                return { status: '💼 上班中', className: 'status-working' };
+            } else {
+                return { status: '👋 已下班', className: 'status-off' };
+            }
+        }
+
         function updateCurrentTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('zh-TW', {
@@ -488,8 +491,9 @@
             });
             document.getElementById('currentTime').textContent = timeString;
             
-            // 更新當日高亮
+            // 更新當日高亮和狀態
             updateTodayHighlight();
+            updateTodayStatus();
         }
 
         function updateTodayHighlight() {
@@ -512,13 +516,62 @@
                 }
             });
             
-            // 如果沒找到今日日期，則高亮第一行
+            // 如果沒找到今日日期，則高亮第一行（預設為今日）
             if (!foundToday) {
                 const firstRow = document.querySelector('#scheduleBody tr');
                 if (firstRow) {
                     firstRow.classList.add('today');
                 }
             }
+        }
+
+        function updateTodayStatus() {
+            // 找到今日的行
+            const todayRow = document.querySelector('tr.today');
+            if (!todayRow) return;
+            
+            const scheduleTimeEl = todayRow.querySelector('.schedule-time');
+            const todayStatusEl = todayRow.querySelector('.schedule-status');
+            const statusDisplay = document.getElementById('statusDisplay');
+            
+            if (!scheduleTimeEl || !todayStatusEl || !statusDisplay) return;
+            
+            const scheduleTime = scheduleTimeEl.textContent.trim();
+            const currentTime = getCurrentTimeInMinutes();
+            
+            const workStatus = determineWorkStatus(scheduleTime, currentTime);
+            
+            // 更新表格中的狀態
+            todayStatusEl.textContent = workStatus.status;
+            
+            // 更新主要狀態顯示
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
+            
+            let statusText = '';
+            let statusIcon = '';
+            
+            switch (workStatus.status) {
+                case '💼 上班中':
+                    statusIcon = '🟢';
+                    statusText = `目前狀態：上班中 (${timeStr})`;
+                    break;
+                case '⏳ 待上班':
+                    statusIcon = '🟡';  
+                    statusText = `目前狀態：待上班 (${timeStr})`;
+                    break;
+                case '👋 已下班':
+                    statusIcon = '🔴';
+                    statusText = `目前狀態：已下班 (${timeStr})`;
+                    break;
+                case '🚫 未排班':
+                    statusIcon = '⚫';
+                    statusText = `目前狀態：今日休息 (${timeStr})`;
+                    break;
+            }
+            
+            statusDisplay.textContent = `${statusIcon} ${statusText}`;
+            statusDisplay.className = `status-display ${workStatus.className}`;
         }
 
         function toggleEditMode() {
@@ -533,17 +586,17 @@
             
             editMode = !editMode;
             const toggleBtn = document.getElementById('editToggle');
-            const editHint = document.getElementById('editHint');
+            const editControls = document.getElementById('editControls');
             
             if (editMode) {
                 toggleBtn.textContent = '💾 儲存編輯';
                 toggleBtn.classList.add('active');
-                editHint.style.display = 'block';
+                editControls.style.display = 'block';
                 enableEdit();
             } else {
                 toggleBtn.textContent = '🔒 開啟編輯模式';
                 toggleBtn.classList.remove('active');
-                editHint.style.display = 'none';
+                editControls.style.display = 'none';
                 disableEdit();
             }
         }
@@ -561,9 +614,9 @@
                 timeEl.onclick = () => editTime(timeEl);
             });
 
-            // 讓狀況可編輯
+            // 讓狀況可編輯（非今日的可以手動設置）
             document.querySelectorAll('.schedule-status').forEach(statusEl => {
-                if (statusEl.id !== 'todayStatus') { // 今日狀況由打卡系統控制
+                if (statusEl.id !== 'todayStatus') { // 今日狀況由系統自動判斷
                     statusEl.classList.add('editable-time');
                     statusEl.onclick = () => editStatus(statusEl);
                 }
@@ -595,8 +648,9 @@
                     dateEl.style.display = 'inline';
                     input.remove();
                     
-                    // 更新當日高亮
+                    // 更新當日高亮和狀態
                     updateTodayHighlight();
+                    updateTodayStatus();
                 }
             };
             
@@ -630,7 +684,7 @@
                     
                     if (newTime === '🚫 休息' || newTime === '') {
                         row.className = isToday ? 'today off-day' : 'off-day';
-                        // 自動更新對應狀態
+                        // 非今日的自動更新對應狀態
                         if (statusEl && statusEl.id !== 'todayStatus') {
                             statusEl.textContent = '🚫 未排班';
                         }
@@ -640,6 +694,11 @@
                         if (statusEl && statusEl.id !== 'todayStatus' && statusEl.textContent === '🚫 未排班') {
                             statusEl.textContent = '⏳ 待上班';
                         }
+                    }
+                    
+                    // 如果修改的是今日班次，立即更新狀態
+                    if (isToday) {
+                        updateTodayStatus();
                     }
                 }
             };
@@ -676,35 +735,6 @@
             statusEl.style.display = 'none';
             statusEl.parentNode.appendChild(select);
             select.focus();
-        }
-
-        function checkIn() {
-            const now = new Date();
-            checkinTime = now;
-            isWorking = true;
-            
-            const statusDisplay = document.getElementById('statusDisplay');
-            statusDisplay.textContent = `🟢 目前狀態：在班中 (${now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'})})`;
-            statusDisplay.className = 'status-display status-on';
-            
-            document.getElementById('checkinBtn').disabled = true;
-            document.getElementById('checkoutBtn').disabled = false;
-            
-            document.getElementById('todayStatus').textContent = '💼 上班中';
-        }
-
-        function checkOut() {
-            const now = new Date();
-            isWorking = false;
-            
-            const statusDisplay = document.getElementById('statusDisplay');
-            statusDisplay.textContent = `🔴 目前狀態：已下班 (${now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'})})`;
-            statusDisplay.className = 'status-display status-off';
-            
-            document.getElementById('checkinBtn').disabled = false;
-            document.getElementById('checkoutBtn').disabled = true;
-            
-            document.getElementById('todayStatus').textContent = '👋 已下班';
         }
 
         function updateToNextWeek() {
@@ -759,8 +789,9 @@
                 }
             });
             
-            // 重新檢查當日高亮
+            // 重新檢查當日高亮和狀態
             updateTodayHighlight();
+            updateTodayStatus();
             
             // 顯示更新成功訊息
             const updateBtn = document.getElementById('updateWeekBtn');
@@ -777,7 +808,8 @@
         // 頁面載入時初始化
         document.addEventListener('DOMContentLoaded', function() {
             updateTodayHighlight();
-            // 每秒更新時間
+            updateTodayStatus();
+            // 每秒更新時間和狀態
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
         });
