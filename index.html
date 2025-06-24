@@ -84,7 +84,7 @@
             margin-bottom: 20px;
         }
         
-        .toggle-btn {
+        .toggle-btn, .pdf-btn {
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
@@ -95,9 +95,10 @@
             color: white;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+            margin: 5px;
         }
         
-        .toggle-btn:hover {
+        .toggle-btn:hover, .pdf-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
         }
@@ -105,6 +106,15 @@
         .toggle-btn.active {
             background: linear-gradient(135deg, #28a745, #20c997);
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .pdf-btn {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+        }
+
+        .pdf-btn:hover {
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
         }
         
         .status-display {
@@ -273,77 +283,6 @@
             font-size: 16px;
             text-align: center;
         }
-        .update-week-btn {
-            background: linear-gradient(135deg, #B22222, #8B0000);
-            color: white;
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 12px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.4);
-        }
-        
-        .update-week-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(178, 34, 34, 0.6);
-        }
-        
-        .export-import-section {
-            border-top: 1px solid rgba(139, 0, 0, 0.2);
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-        
-        .export-btn, .import-btn {
-            background: linear-gradient(135deg, #17a2b8, #138496);
-            color: white;
-            margin: 5px;
-            padding: 8px 16px;
-            font-size: 12px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
-        }
-        
-        .export-btn:hover, .import-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
-        }
-        
-        .file-input {
-            display: none;
-        }
-        
-        .data-warning {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid #ffc107;
-            color: #856404;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            margin-bottom: 15px;
-        }
-            background: linear-gradient(135deg, #B22222, #8B0000);
-            color: white;
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 12px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.4);
-        }
-        
-        .update-week-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(178, 34, 34, 0.6);
-        }
         
         .notes {
             background: linear-gradient(135deg, #f8f9fa, #e9ecef);
@@ -357,6 +296,75 @@
 
         .notes strong {
             color: #8B0000;
+        }
+
+        /* PDF列印樣式 */
+        @media print {
+            body {
+                background: white !important;
+                font-size: 12px;
+            }
+            
+            .schedule-board {
+                box-shadow: none !important;
+                background: white !important;
+                backdrop-filter: none !important;
+                transform: none !important;
+                padding: 20px;
+                margin: 0;
+                max-width: none;
+            }
+            
+            .header {
+                background: #8B0000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .control-panel {
+                display: none !important;
+            }
+            
+            .edit-mode {
+                display: none !important;
+            }
+            
+            .edit-controls {
+                display: none !important;
+            }
+            
+            .notes {
+                display: none !important;
+            }
+            
+            .schedule-table {
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+            }
+            
+            .schedule-table th {
+                background: #8B0000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border: 1px solid #000 !important;
+            }
+            
+            .schedule-table td {
+                border: 1px solid #000 !important;
+            }
+            
+            .today {
+                background: #fff3cd !important;
+                border: 2px solid #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .work-day {
+                background: #d4edda !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
 
         /* 響應式設計 */
@@ -459,16 +467,14 @@
             <button id="editToggle" class="toggle-btn" onclick="toggleEditMode()">
                 🔒 開啟編輯模式
             </button>
+            <button id="pdfBtn" class="pdf-btn" onclick="generatePDF()">
+                📄 輸出PDF
+            </button>
             <div style="font-size: 11px; color: #6c757d; margin-top: 8px;">需要密碼驗證</div>
         </div>
         
         <div id="editControls" class="edit-controls" style="display: none;">
             <h3>📝 編輯控制台</h3>
-            
-            <div class="data-warning">
-                ⚠️ <strong>資料保存提醒</strong>：修改的資料只在本次瀏覽中有效，關閉頁面後會恢復原始狀態。<br>
-                請使用下方的「匯出資料」功能保存您的修改！
-            </div>
             
             <div class="edit-hint">
                 💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
@@ -479,23 +485,7 @@
                 • 🤒 請假 - 手動設置請假狀態<br>
                 • 🚫 未排班 - 休息日<br>
                 <br>
-                📌 <strong>提醒</strong>：今日狀況可手動編輯，手動設置後不會被自動覆蓋<br>
-                
-                <button id="updateWeekBtn" class="update-week-btn" onclick="updateToNextWeek()">
-                    📅 更新為下週日期
-                </button>
-            </div>
-            
-            <div class="export-import-section">
-                <h4 style="margin: 0 0 10px 0; color: #8B0000; font-size: 14px; text-align: center;">💾 資料保存與載入</h4>
-                <div style="text-align: center;">
-                    <button class="export-btn" onclick="exportData()">📤 匯出資料</button>
-                    <button class="import-btn" onclick="document.getElementById('importFile').click()">📥 匯入資料</button>
-                    <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
-                </div>
-                <div style="font-size: 10px; color: #6c757d; text-align: center; margin-top: 8px;">
-                    匯出的資料檔案可在下次開啟時匯入，恢復您的設定
-                </div>
+                📌 <strong>提醒</strong>：所有修改僅在本次瀏覽中有效，關閉頁面後會恢復原始狀態
             </div>
         </div>
         
@@ -503,8 +493,7 @@
 
     <script>
         let editMode = false;
-        let todayStatusManuallySet = false; // 記錄今日狀況是否被手動設置
-        // 編輯密碼設定（可修改為您想要的密碼）
+        let todayStatusManuallySet = false;
         const editPassword = '1234';
 
         const statusOptions = [
@@ -517,7 +506,7 @@
 
         function parseTime(timeStr) {
             const [hours, minutes] = timeStr.split(':').map(Number);
-            return hours * 60 + minutes; // 轉換為分鐘數
+            return hours * 60 + minutes;
         }
 
         function getCurrentTimeInMinutes() {
@@ -526,12 +515,10 @@
         }
 
         function determineWorkStatus(scheduleTime, currentTime) {
-            // 如果是休息日
             if (scheduleTime.includes('🚫') || scheduleTime === '') {
                 return { status: '🚫 未排班', className: 'status-nowork' };
             }
             
-            // 解析班次時間（如：08:00-17:00）
             const timeMatch = scheduleTime.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
             if (!timeMatch) {
                 return { status: '🚫 未排班', className: 'status-nowork' };
@@ -559,7 +546,6 @@
             });
             document.getElementById('currentTime').textContent = timeString;
             
-            // 更新當日高亮和狀態
             updateTodayHighlight();
             updateTodayStatus();
         }
@@ -568,12 +554,10 @@
             const today = new Date();
             const todayDateStr = `${today.getMonth() + 1}/${today.getDate()}`;
             
-            // 移除所有現有的today樣式
             document.querySelectorAll('tr.today').forEach(row => {
                 row.classList.remove('today');
             });
             
-            // 尋找今日日期
             let foundToday = false;
             document.querySelectorAll('.schedule-date').forEach(dateEl => {
                 const dateStr = dateEl.textContent.trim();
@@ -584,7 +568,6 @@
                 }
             });
             
-            // 如果沒找到今日日期，則高亮第一行（預設為今日）
             if (!foundToday) {
                 const firstRow = document.querySelector('#scheduleBody tr');
                 if (firstRow) {
@@ -592,12 +575,10 @@
                 }
             }
             
-            // 重置手動設置標記，因為今日可能已改變
             todayStatusManuallySet = false;
         }
 
         function updateTodayStatus() {
-            // 找到今日的行
             const todayRow = document.querySelector('tr.today');
             if (!todayRow) return;
             
@@ -612,12 +593,10 @@
             
             const workStatus = determineWorkStatus(scheduleTime, currentTime);
             
-            // 只有在今日狀況沒有被手動設置時才自動更新
             if (!todayStatusManuallySet) {
                 todayStatusEl.textContent = workStatus.status;
             }
             
-            // 更新主要狀態顯示（始終根據班次時間自動判斷）
             const now = new Date();
             const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
             
@@ -653,7 +632,6 @@
 
         function toggleEditMode() {
             if (!editMode) {
-                // 進入編輯模式前要求密碼
                 const inputPassword = prompt('請輸入編輯密碼：');
                 if (inputPassword !== editPassword) {
                     alert('密碼錯誤，無法進入編輯模式！');
@@ -679,19 +657,16 @@
         }
 
         function enableEdit() {
-            // 讓日期可編輯
             document.querySelectorAll('.schedule-date').forEach(dateEl => {
                 dateEl.classList.add('editable-time');
                 dateEl.onclick = () => editDate(dateEl);
             });
             
-            // 讓所有班次時間都可編輯（包含休假日）
             document.querySelectorAll('.schedule-time').forEach(timeEl => {
                 timeEl.classList.add('editable-time');
                 timeEl.onclick = () => editTime(timeEl);
             });
 
-            // 讓所有狀況都可編輯（包括今日狀況）
             document.querySelectorAll('.schedule-status').forEach(statusEl => {
                 statusEl.classList.add('editable-time');
                 statusEl.onclick = () => editStatus(statusEl);
@@ -723,11 +698,8 @@
                     dateEl.style.display = 'inline';
                     input.remove();
                     
-                    // 更新當日高亮和狀態
                     updateTodayHighlight();
                     updateTodayStatus();
-                    
-                    // 重置手動設置標記，因為日期可能已改變
                     todayStatusManuallySet = false;
                 }
             };
@@ -755,28 +727,24 @@
                     timeEl.style.display = 'inline';
                     input.remove();
                     
-                    // 根據時間更新行的樣式，保持today狀態
                     const row = timeEl.closest('tr');
                     const isToday = row.classList.contains('today');
                     const statusEl = row.querySelector('.schedule-status');
                     
                     if (newTime === '🚫 休息' || newTime === '') {
                         row.className = isToday ? 'today off-day' : 'off-day';
-                        // 非今日的自動更新對應狀態
                         if (statusEl && !isToday) {
                             statusEl.textContent = '🚫 未排班';
                         }
                     } else {
                         row.className = isToday ? 'today work-day' : 'work-day';
-                        // 如果從休息改為工作日，預設為待上班
                         if (statusEl && !isToday && statusEl.textContent === '🚫 未排班') {
                             statusEl.textContent = '⏳ 待上班';
                         }
                     }
                     
-                    // 如果修改的是今日班次，重置手動設置標記並立即更新狀態
                     if (isToday) {
-                        todayStatusManuallySet = false; // 重置手動設置標記
+                        todayStatusManuallySet = false;
                         updateTodayStatus();
                     }
                 }
@@ -810,11 +778,10 @@
                 statusEl.style.display = 'inline';
                 select.remove();
                 
-                // 檢查是否編輯的是今日狀況
                 const row = statusEl.closest('tr');
                 const isToday = row && row.classList.contains('today');
                 if (isToday) {
-                    todayStatusManuallySet = true; // 標記今日狀況已被手動設置
+                    todayStatusManuallySet = true;
                 }
             };
             
@@ -824,16 +791,12 @@
         }
 
         function initializeCurrentWeek() {
-            // 獲取當前日期
             const today = new Date();
-            
-            // 計算本週一的日期（週一為一週的開始）
-            const dayOfWeek = today.getDay(); // 0=週日, 1=週一, ..., 6=週六
-            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 週日需要特殊處理
+            const dayOfWeek = today.getDay();
+            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
             const monday = new Date(today);
             monday.setDate(today.getDate() - daysFromMonday);
             
-            // 計算本週的所有日期
             const weekDates = [];
             for (let i = 0; i < 7; i++) {
                 const date = new Date(monday);
@@ -841,7 +804,6 @@
                 weekDates.push(date);
             }
             
-            // 更新表格中的日期
             const dateElements = document.querySelectorAll('.schedule-date');
             dateElements.forEach((dateEl, index) => {
                 if (index < weekDates.length) {
@@ -852,200 +814,41 @@
             });
         }
 
-        function updateToNextWeek() {
-            if (!editMode) return;
-            
-            // 獲取當前顯示的第一個日期
-            const firstDateEl = document.querySelector('.schedule-date');
-            if (!firstDateEl) return;
-            
-            const firstDateText = firstDateEl.textContent.trim();
-            const dateParts = firstDateText.split('/');
-            
-            if (dateParts.length !== 2) return;
-            
-            const month = parseInt(dateParts[0]);
-            const day = parseInt(dateParts[1]);
-            const currentYear = new Date().getFullYear();
-            
-            // 建立當前週一的日期
-            let currentMonday = new Date(currentYear, month - 1, day);
-            
-            // 如果解析的日期無效，使用今天作為基準
-            if (isNaN(currentMonday.getTime())) {
-                const today = new Date();
-                const dayOfWeek = today.getDay();
-                const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-                currentMonday = new Date(today);
-                currentMonday.setDate(today.getDate() - daysFromMonday);
-            }
-            
-            // 加7天得到下週一
-            const nextMonday = new Date(currentMonday);
-            nextMonday.setDate(currentMonday.getDate() + 7);
-            
-            // 計算下週的所有日期
-            const weekDates = [];
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(nextMonday);
-                date.setDate(nextMonday.getDate() + i);
-                weekDates.push(date);
-            }
-            
-            // 更新表格中的日期
-            const dateElements = document.querySelectorAll('.schedule-date');
-            dateElements.forEach((dateEl, index) => {
-                if (index < weekDates.length) {
-                    const targetDate = weekDates[index];
-                    const formattedDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
-                    dateEl.textContent = formattedDate;
-                }
-            });
-            
-            // 重新檢查當日高亮和狀態
-            updateTodayHighlight();
-            updateTodayStatus();
-            
-            // 重置手動設置標記
-            todayStatusManuallySet = false;
-            
-            // 顯示更新成功訊息
-            const updateBtn = document.getElementById('updateWeekBtn');
-            const originalText = updateBtn.textContent;
-            updateBtn.textContent = '✅ 已更新！';
-            updateBtn.style.background = '#28a745';
-            
-            setTimeout(() => {
-                updateBtn.textContent = originalText;
-                updateBtn.style.background = 'linear-gradient(135deg, #B22222, #8B0000)';
-            }, 2000);
-        }
-
-        function exportData() {
-            // 收集所有班表資料
-            const scheduleData = {
-                exportTime: new Date().toISOString(),
-                todayStatusManuallySet: todayStatusManuallySet,
-                scheduleRows: []
-            };
-            
-            // 取得所有班表行資料
-            document.querySelectorAll('#scheduleBody tr').forEach((row, index) => {
-                const dateEl = row.querySelector('.schedule-date');
-                const timeEl = row.querySelector('.schedule-time');
-                const statusEl = row.querySelector('.schedule-status');
-                const dayAttr = row.getAttribute('data-day');
-                const isToday = row.classList.contains('today');
-                const isWorkDay = row.classList.contains('work-day');
-                
-                scheduleData.scheduleRows.push({
-                    index: index,
-                    day: dayAttr,
-                    date: dateEl ? dateEl.textContent.trim() : '',
-                    time: timeEl ? timeEl.textContent.trim() : '',
-                    status: statusEl ? statusEl.textContent.trim() : '',
-                    isToday: isToday,
-                    isWorkDay: isWorkDay
+        function generatePDF() {
+            // 隱藏不需要列印的元素
+            const elementsToHide = ['.control-panel', '.edit-mode', '.edit-controls', '.notes'];
+            elementsToHide.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    el.style.display = 'none';
                 });
             });
-            
-            // 建立下載連結
-            const dataStr = JSON.stringify(scheduleData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            
-            const downloadLink = document.createElement('a');
-            downloadLink.href = url;
-            downloadLink.download = `珍秀班次資料_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-            URL.revokeObjectURL(url);
-            
-            // 顯示成功訊息
-            alert('資料已匯出！請保存檔案，下次可用來匯入恢復設定。');
-        }
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const scheduleData = JSON.parse(e.target.result);
-                    
-                    // 驗證資料格式
-                    if (!scheduleData.scheduleRows || !Array.isArray(scheduleData.scheduleRows)) {
-                        throw new Error('無效的資料格式');
-                    }
-                    
-                    // 恢復資料
-                    scheduleData.scheduleRows.forEach((rowData, index) => {
-                        const row = document.querySelector(`#scheduleBody tr:nth-child(${index + 1})`);
-                        if (!row) return;
-                        
-                        // 更新日期
-                        const dateEl = row.querySelector('.schedule-date');
-                        if (dateEl && rowData.date) {
-                            dateEl.textContent = rowData.date;
-                        }
-                        
-                        // 更新時間
-                        const timeEl = row.querySelector('.schedule-time');
-                        if (timeEl && rowData.time) {
-                            timeEl.textContent = rowData.time;
-                        }
-                        
-                        // 更新狀態
-                        const statusEl = row.querySelector('.schedule-status');
-                        if (statusEl && rowData.status) {
-                            statusEl.textContent = rowData.status;
-                        }
-                        
-                        // 更新行樣式
-                        row.className = '';
-                        if (rowData.isToday) row.classList.add('today');
-                        if (rowData.isWorkDay) {
-                            row.classList.add('work-day');
-                        } else {
-                            row.classList.add('off-day');
-                        }
-                        row.setAttribute('data-day', rowData.day);
+            // 設置列印標題
+            const originalTitle = document.title;
+            const now = new Date();
+            document.title = `珍秀班次表_${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+
+            // 執行列印
+            window.print();
+
+            // 列印完成後恢復原狀
+            setTimeout(() => {
+                document.title = originalTitle;
+                elementsToHide.forEach(selector => {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(el => {
+                        el.style.display = '';
                     });
-                    
-                    // 恢復手動設置標記
-                    if (scheduleData.todayStatusManuallySet !== undefined) {
-                        todayStatusManuallySet = scheduleData.todayStatusManuallySet;
-                    }
-                    
-                    // 更新顯示
-                    updateTodayHighlight();
-                    updateTodayStatus();
-                    
-                    alert(`資料匯入成功！\n匯出時間：${new Date(scheduleData.exportTime).toLocaleString('zh-TW')}`);
-                    
-                } catch (error) {
-                    alert('匯入失敗：檔案格式不正確或已損壞。\n請確認選擇的是正確的資料檔案。');
-                    console.error('Import error:', error);
-                }
-            };
-            
-            reader.readAsText(file);
-            // 清除檔案選擇，允許重複選擇同一檔案
-            event.target.value = '';
+                });
+            }, 1000);
         }
 
         // 頁面載入時初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 首先初始化當週日期
             initializeCurrentWeek();
-            
-            // 然後更新當日高亮和狀態
             updateTodayHighlight();
             updateTodayStatus();
-            
-            // 每秒更新時間和狀態
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
         });
