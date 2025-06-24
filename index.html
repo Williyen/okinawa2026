@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>珍秀的班次動態</title>
+    
+    <!-- =====================================================
+         📋 班次設定區 - 只要修改這裡就好！
+         ===================================================== 
+         格式：星期幾 + 開始時間4位 + 結束時間4位
+         範例：108301430 = 星期一 08:30-14:30
+         休息：700000000 = 週日休息 (7+8個0)
+         
+         星期對照：1=週一, 2=週二, 3=週三, 4=週四, 5=週五, 6=週六, 7=週日
+         沒寫到的也是休息日
+    -->
+    <script>
+        // 🔧 在這裡設定您的班次！
+        const WORK_SCHEDULE = [
+            '108301430',  // 週一 08:30-14:30
+            '208301430',  // 週二 08:30-14:30  
+            '308301430',  // 週三 08:30-14:30
+            '408301430',  // 週四 08:30-14:30
+            '508301430',  // 週五 08:30-14:30
+            '600000000',  // 週六 休息
+            '700000000',  // 週日 休息
+        ];
+    </script>
+    <!-- ===================================================== -->
+
     <style>
         * {
             box-sizing: border-box;
@@ -36,7 +61,7 @@
         
         .header {
             text-align: center;
-            background: linear-gradient(135deg, #8B0000, #A0203D);
+            background: linear-gradient(135deg, #FF8000, #FFD306);
             color: white;
             padding: 20px;
             border-radius: 15px;
@@ -80,41 +105,16 @@
             backdrop-filter: blur(5px);
         }
         
-        .edit-mode {
-            margin-bottom: 20px;
-        }
-        
-        .toggle-btn, .pdf-btn {
+        .btn {
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            background: linear-gradient(135deg, #8B0000, #A0203D);
-            color: white;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
             margin: 5px;
-        }
-        
-        .toggle-btn:hover, .pdf-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
-        }
-        
-        .toggle-btn.active {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-        }
-
-        .pdf-btn {
-            background: linear-gradient(135deg, #17a2b8, #138496);
-            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
-        }
-
-        .pdf-btn:hover {
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
+            display: inline-block;
         }
         
         .status-display {
@@ -181,7 +181,7 @@
         }
         
         .schedule-table th {
-            background: linear-gradient(135deg, #8B0000, #A0203D);
+            background: linear-gradient(135deg, #FF8000, #FFD306);
             color: white;
             padding: 15px 10px;
             text-align: center;
@@ -226,78 +226,6 @@
             color: #6c757d;
         }
         
-        .editable-time {
-            background: rgba(139, 0, 0, 0.1);
-            border: 1px dashed #8B0000;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-        
-        .editable-time:hover {
-            background: rgba(139, 0, 0, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .time-input {
-            width: 95%;
-            padding: 6px 8px;
-            border: 1px solid #8B0000;
-            border-radius: 6px;
-            font-size: 12px;
-            text-align: center;
-            background: white;
-        }
-        
-        .status-select {
-            padding: 4px 8px;
-            border: 1px solid #8B0000;
-            border-radius: 6px;
-            font-size: 11px;
-            background: white;
-        }
-        
-        .edit-hint {
-            font-size: 12px;
-            color: #8B0000;
-            margin-top: 15px;
-            background: rgba(139, 0, 0, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #8B0000;
-        }
-        
-        .edit-controls {
-            background: rgba(248, 249, 250, 0.9);
-            border: 2px solid rgba(139, 0, 0, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .edit-controls h3 {
-            margin: 0 0 15px 0;
-            color: #8B0000;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .notes {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-left: 4px solid #8B0000;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 13px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .notes strong {
-            color: #8B0000;
-        }
-
         /* PDF列印樣式 */
         @media print {
             body {
@@ -322,18 +250,6 @@
             }
             
             .control-panel {
-                display: none !important;
-            }
-            
-            .edit-mode {
-                display: none !important;
-            }
-            
-            .edit-controls {
-                display: none !important;
-            }
-            
-            .notes {
                 display: none !important;
             }
             
@@ -379,6 +295,12 @@
                 padding: 8px 4px;
                 font-size: 11px;
             }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 12px;
+                margin: 3px;
+            }
         }
 
         /* 載入動畫 */
@@ -418,91 +340,41 @@
                 </tr>
             </thead>
             <tbody id="scheduleBody">
-                <tr class="work-day" data-day="1">
-                    <td>一</td>
-                    <td><span class="schedule-date">6/23</span></td>
-                    <td><span class="schedule-time">08:30-14:30</span></td>
-                    <td><span class="schedule-status">👋 已下班</span></td>
-                </tr>
-                <tr class="work-day" data-day="2">
-                    <td>二</td>
-                    <td><span class="schedule-date">6/24</span></td>
-                    <td><span class="schedule-time">08:30-14:30</span></td>
-                    <td><span class="schedule-status">⏳ 待上班</span></td>
-                </tr>
-                <tr class="work-day" data-day="3">
-                    <td>三</td>
-                    <td><span class="schedule-date">6/25</span></td>
-                    <td><span class="schedule-time">08:30-14:30</span></td>
-                    <td><span class="schedule-status">⏳ 待上班</span></td>
-                </tr>
-                <tr class="work-day" data-day="4">
-                    <td>四</td>
-                    <td><span class="schedule-date">6/26</span></td>
-                    <td><span class="schedule-time">08:30-14:30</span></td>
-                    <td><span class="schedule-status">⏳ 待上班</span></td>
-                </tr>
-                <tr class="work-day" data-day="5">
-                    <td>五</td>
-                    <td><span class="schedule-date">6/27</span></td>
-                    <td><span class="schedule-time">08:30-14:30</span></td>
-                    <td><span class="schedule-status">⏳ 待上班</span></td>
-                </tr>
-                <tr class="off-day" data-day="6">
-                    <td>六</td>
-                    <td><span class="schedule-date">6/28</span></td>
-                    <td><span class="schedule-time">🚫 休息</span></td>
-                    <td><span class="schedule-status">🚫 未排班</span></td>
-                </tr>
-                <tr class="off-day" data-day="0">
-                    <td>日</td>
-                    <td><span class="schedule-date">6/29</span></td>
-                    <td><span class="schedule-time">🚫 休息</span></td>
-                    <td><span class="schedule-status">🚫 未排班</span></td>
-                </tr>
+                <!-- 表格內容將由JavaScript自動生成 -->
             </tbody>
         </table>
         
-        <div class="edit-mode" style="text-align: center; margin-top: 20px;">
-            <button id="editToggle" class="toggle-btn" onclick="toggleEditMode()">
-                🔒 開啟編輯模式
-            </button>
-            <button id="pdfBtn" class="pdf-btn" onclick="generatePDF()">
+        <div style="text-align: center;">
+            <button id="pdfBtn" class="btn btn-info" onclick="generatePDF()">
                 📄 輸出PDF
             </button>
-            <div style="font-size: 11px; color: #6c757d; margin-top: 8px;">需要密碼驗證</div>
-        </div>
-        
-        <div id="editControls" class="edit-controls" style="display: none;">
-            <h3>📝 編輯控制台</h3>
-            
-            <div class="edit-hint">
-                💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
-                📋 <strong>狀態說明</strong>：<br>
-                • ⏳ 待上班 - 班次開始前<br>
-                • 💼 上班中 - 班次時間內<br>
-                • 👋 已下班 - 班次結束後<br>
-                • 🤒 請假 - 手動設置請假狀態<br>
-                • 🚫 未排班 - 休息日<br>
-                <br>
-                📌 <strong>提醒</strong>：所有修改僅在本次瀏覽中有效，關閉頁面後會恢復原始狀態
-            </div>
-        </div>
-        
     </div>
 
     <script>
-        let editMode = false;
-        let todayStatusManuallySet = false;
-        const editPassword = '1234';
-
-        const statusOptions = [
-            '⏳ 待上班',
-            '💼 上班中', 
-            '👋 已下班',
-            '🤒 請假',
-            '🚫 未排班'
-        ];
+        // 解析班次設定
+        function parseScheduleConfig() {
+            const scheduleMap = new Map();
+            
+            WORK_SCHEDULE.forEach(config => {
+                if (config.length !== 9) return; // 必須是9位數字
+                
+                const dayOfWeek = parseInt(config[0]);
+                const startHour = config.substring(1, 3);
+                const startMin = config.substring(3, 5);
+                const endHour = config.substring(5, 7);
+                const endMin = config.substring(7, 9);
+                
+                // 檢查是否為休息日格式 (X00000000)
+                if (startHour === '00' && startMin === '00' && endHour === '00' && endMin === '00') {
+                    scheduleMap.set(dayOfWeek, '🚫 休息');
+                } else {
+                    const timeStr = `${startHour}:${startMin}-${endHour}:${endMin}`;
+                    scheduleMap.set(dayOfWeek, timeStr);
+                }
+            });
+            
+            return scheduleMap;
+        }
 
         function parseTime(timeStr) {
             const [hours, minutes] = timeStr.split(':').map(Number);
@@ -533,6 +405,104 @@
                 return { status: '💼 上班中', className: 'status-working' };
             } else {
                 return { status: '👋 已下班', className: 'status-off' };
+            }
+        }
+
+        // 修復版：計算指定日期的工作狀態
+        function determineWorkStatusForDate(scheduleTime, targetDate) {
+            if (scheduleTime.includes('🚫') || scheduleTime === '') {
+                return { status: '🚫 未排班', className: 'status-nowork' };
+            }
+            
+            const timeMatch = scheduleTime.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
+            if (!timeMatch) {
+                return { status: '🚫 未排班', className: 'status-nowork' };
+            }
+            
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+            
+            // 如果是未來的日期，顯示待上班
+            if (target > today) {
+                return { status: '⏳ 待上班', className: 'status-waiting' };
+            }
+            
+            // 如果是今天，根據當前時間判斷
+            if (target.getTime() === today.getTime()) {
+                const currentTime = getCurrentTimeInMinutes();
+                return determineWorkStatus(scheduleTime, currentTime);
+            }
+            
+            // 如果是過去的日期，顯示已下班
+            if (target < today) {
+                return { status: '👋 已下班', className: 'status-off' };
+            }
+            
+            return { status: '⏳ 待上班', className: 'status-waiting' };
+        }
+
+        // 生成班表HTML
+        function generateScheduleTable() {
+            const scheduleMap = parseScheduleConfig();
+            const dayNames = ['', '一', '二', '三', '四', '五', '六', '日']; // 索引0不用，1-7對應週一到週日
+            const scheduleBody = document.getElementById('scheduleBody');
+            
+            // 獲取本週日期
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - daysFromMonday);
+            
+            const weekDates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                weekDates.push(date);
+            }
+            
+            // 生成表格行（週一到週日：1-7）
+            scheduleBody.innerHTML = '';
+            for (let i = 1; i <= 7; i++) {
+                const dayIndex = i; // 1=週一, 2=週二, ..., 7=週日
+                const dateIndex = i - 1; // 陣列索引 0-6
+                const dayName = dayNames[dayIndex];
+                const targetDate = weekDates[dateIndex];
+                const dateStr = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
+                
+                const hasSchedule = scheduleMap.has(dayIndex);
+                let timeStr, statusStr, rowClass;
+                
+                if (hasSchedule) {
+                    timeStr = scheduleMap.get(dayIndex);
+                    if (timeStr === '🚫 休息') {
+                        statusStr = '🚫 未排班';
+                        rowClass = 'off-day';
+                    } else {
+                        // 修復：根據日期計算正確的工作狀態
+                        const workStatus = determineWorkStatusForDate(timeStr, targetDate);
+                        statusStr = workStatus.status;
+                        rowClass = 'work-day';
+                    }
+                } else {
+                    timeStr = '🚫 休息';
+                    statusStr = '🚫 未排班';
+                    rowClass = 'off-day';
+                }
+                
+                const row = document.createElement('tr');
+                row.className = rowClass;
+                row.setAttribute('data-day', dayIndex);
+                
+                row.innerHTML = `
+                    <td>${dayName}</td>
+                    <td><span class="schedule-date">${dateStr}</span></td>
+                    <td><span class="schedule-time">${timeStr}</span></td>
+                    <td><span class="schedule-status">${statusStr}</span></td>
+                `;
+                
+                scheduleBody.appendChild(row);
             }
         }
 
@@ -574,8 +544,6 @@
                     firstRow.classList.add('today');
                 }
             }
-            
-            todayStatusManuallySet = false;
         }
 
         function updateTodayStatus() {
@@ -593,9 +561,7 @@
             
             const workStatus = determineWorkStatus(scheduleTime, currentTime);
             
-            if (!todayStatusManuallySet) {
-                todayStatusEl.textContent = workStatus.status;
-            }
+            todayStatusEl.textContent = workStatus.status;
             
             const now = new Date();
             const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
@@ -630,223 +596,9 @@
             statusDisplay.className = `status-display ${workStatus.className}`;
         }
 
-        function toggleEditMode() {
-            if (!editMode) {
-                const inputPassword = prompt('請輸入編輯密碼：');
-                if (inputPassword !== editPassword) {
-                    alert('密碼錯誤，無法進入編輯模式！');
-                    return;
-                }
-            }
-            
-            editMode = !editMode;
-            const toggleBtn = document.getElementById('editToggle');
-            const editControls = document.getElementById('editControls');
-            
-            if (editMode) {
-                toggleBtn.textContent = '💾 儲存編輯';
-                toggleBtn.classList.add('active');
-                editControls.style.display = 'block';
-                enableEdit();
-            } else {
-                toggleBtn.textContent = '🔒 開啟編輯模式';
-                toggleBtn.classList.remove('active');
-                editControls.style.display = 'none';
-                disableEdit();
-            }
-        }
-
-        function enableEdit() {
-            document.querySelectorAll('.schedule-date').forEach(dateEl => {
-                dateEl.classList.add('editable-time');
-                dateEl.onclick = () => editDate(dateEl);
-            });
-            
-            document.querySelectorAll('.schedule-time').forEach(timeEl => {
-                timeEl.classList.add('editable-time');
-                timeEl.onclick = () => editTime(timeEl);
-            });
-
-            document.querySelectorAll('.schedule-status').forEach(statusEl => {
-                statusEl.classList.add('editable-time');
-                statusEl.onclick = () => editStatus(statusEl);
-            });
-        }
-
-        function disableEdit() {
-            document.querySelectorAll('.editable-time').forEach(el => {
-                el.classList.remove('editable-time');
-                el.onclick = null;
-            });
-        }
-
-        function editDate(dateEl) {
-            if (!editMode) return;
-            
-            const currentDate = dateEl.textContent;
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentDate;
-            input.className = 'time-input';
-            input.placeholder = '6/24';
-            input.style.width = '60px';
-            
-            input.onblur = input.onkeypress = function(e) {
-                if (e.type === 'blur' || e.key === 'Enter') {
-                    const newDate = input.value.trim();
-                    dateEl.textContent = newDate || currentDate;
-                    dateEl.style.display = 'inline';
-                    input.remove();
-                    
-                    updateTodayHighlight();
-                    updateTodayStatus();
-                    todayStatusManuallySet = false;
-                }
-            };
-            
-            dateEl.style.display = 'none';
-            dateEl.parentNode.appendChild(input);
-            input.focus();
-            input.select();
-        }
-
-        function editTime(timeEl) {
-            if (!editMode) return;
-            
-            const currentTime = timeEl.textContent;
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentTime;
-            input.className = 'time-input';
-            input.placeholder = '08:00-17:00 或 🚫 休息';
-            
-            input.onblur = input.onkeypress = function(e) {
-                if (e.type === 'blur' || e.key === 'Enter') {
-                    const newTime = input.value.trim();
-                    timeEl.textContent = newTime || currentTime;
-                    timeEl.style.display = 'inline';
-                    input.remove();
-                    
-                    const row = timeEl.closest('tr');
-                    const isToday = row.classList.contains('today');
-                    const statusEl = row.querySelector('.schedule-status');
-                    
-                    if (newTime === '🚫 休息' || newTime === '') {
-                        row.className = isToday ? 'today off-day' : 'off-day';
-                        if (statusEl && !isToday) {
-                            statusEl.textContent = '🚫 未排班';
-                        }
-                    } else {
-                        row.className = isToday ? 'today work-day' : 'work-day';
-                        if (statusEl && !isToday && statusEl.textContent === '🚫 未排班') {
-                            statusEl.textContent = '⏳ 待上班';
-                        }
-                    }
-                    
-                    if (isToday) {
-                        todayStatusManuallySet = false;
-                        updateTodayStatus();
-                    }
-                }
-            };
-            
-            timeEl.style.display = 'none';
-            timeEl.parentNode.appendChild(input);
-            input.focus();
-            input.select();
-        }
-
-        function editStatus(statusEl) {
-            if (!editMode) return;
-            
-            const currentStatus = statusEl.textContent.trim();
-            const select = document.createElement('select');
-            select.className = 'status-select';
-            
-            statusOptions.forEach(option => {
-                const optionEl = document.createElement('option');
-                optionEl.value = option;
-                optionEl.textContent = option;
-                if (currentStatus === option) {
-                    optionEl.selected = true;
-                }
-                select.appendChild(optionEl);
-            });
-            
-            select.onblur = select.onchange = function() {
-                statusEl.textContent = select.value;
-                statusEl.style.display = 'inline';
-                select.remove();
-                
-                const row = statusEl.closest('tr');
-                const isToday = row && row.classList.contains('today');
-                if (isToday) {
-                    todayStatusManuallySet = true;
-                }
-            };
-            
-            statusEl.style.display = 'none';
-            statusEl.parentNode.appendChild(select);
-            select.focus();
-        }
-
-        function initializeCurrentWeek() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-            const monday = new Date(today);
-            monday.setDate(today.getDate() - daysFromMonday);
-            
-            const weekDates = [];
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + i);
-                weekDates.push(date);
-            }
-            
-            const dateElements = document.querySelectorAll('.schedule-date');
-            dateElements.forEach((dateEl, index) => {
-                if (index < weekDates.length) {
-                    const targetDate = weekDates[index];
-                    const formattedDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
-                    dateEl.textContent = formattedDate;
-                }
-            });
-        }
-
-        function generatePDF() {
-            // 隱藏不需要列印的元素
-            const elementsToHide = ['.control-panel', '.edit-mode', '.edit-controls', '.notes'];
-            elementsToHide.forEach(selector => {
-                const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
-                    el.style.display = 'none';
-                });
-            });
-
-            // 設置列印標題
-            const originalTitle = document.title;
-            const now = new Date();
-            document.title = `珍秀班次表_${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
-
-            // 執行列印
-            window.print();
-
-            // 列印完成後恢復原狀
-            setTimeout(() => {
-                document.title = originalTitle;
-                elementsToHide.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(el => {
-                        el.style.display = '';
-                    });
-                });
-            }, 1000);
-        }
-
         // 頁面載入時初始化
         document.addEventListener('DOMContentLoaded', function() {
-            initializeCurrentWeek();
+            generateScheduleTable(); // 根據設定生成班表
             updateTodayHighlight();
             updateTodayStatus();
             setInterval(updateCurrentTime, 1000);
