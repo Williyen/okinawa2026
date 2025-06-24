@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可編輯工讀生班表告示板</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .schedule-board {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 20px rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .schedule-board:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #8B0000, #A0203D);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .control-panel {
+            background: rgba(248, 249, 250, 0.8);
+            border: 2px solid rgba(222, 226, 230, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .edit-mode {
+            margin-bottom: 20px;
+        }
+        
+        .toggle-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #8B0000, #A0203D);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
+        }
+        
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .status-display {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .status-on {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #27ae60;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+        
+        .status-off {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #e74c3c;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .btn-checkin {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .btn-checkin:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+        
+        .btn-checkout {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .btn-checkout:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .current-time {
+            font-size: 16px;
+            color: #495057;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-table th {
+            background: linear-gradient(135deg, #8B0000, #A0203D);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .schedule-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid rgba(222, 226, 230, 0.5);
+            font-size: 13px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-table tr:hover td {
+            background: rgba(139, 0, 0, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .today {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffc107;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(255, 193, 7, 0.8); }
+        }
+        
+        .work-day {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+        
+        .off-day {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #6c757d;
+        }
+        
+        .editable-time {
+            background: rgba(139, 0, 0, 0.1);
+            border: 1px dashed #8B0000;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .editable-time:hover {
+            background: rgba(139, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .time-input {
+            width: 95%;
+            padding: 6px 8px;
+            border: 1px solid #8B0000;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            background: white;
+        }
+        
+        .status-select {
+            padding: 4px 8px;
+            border: 1px solid #8B0000;
+            border-radius: 6px;
+            font-size: 11px;
+            background: white;
+        }
+        
+        .edit-hint {
+            font-size: 12px;
+            color: #8B0000;
+            margin-top: 15px;
+            background: rgba(139, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #8B0000;
+        }
+        
+        .update-week-btn {
+            background: linear-gradient(135deg, #B22222, #8B0000);
+            color: white;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 12px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.4);
+        }
+        
+        .update-week-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(178, 34, 34, 0.6);
+        }
+        
+        .notes {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #8B0000;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .notes strong {
+            color: #8B0000;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .schedule-board {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .control-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .schedule-table th,
+            .schedule-table td {
+                padding: 8px 4px;
+                font-size: 11px;
+            }
+        }
+
+        /* 載入動畫 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .schedule-board {
+            animation: fadeIn 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="schedule-board">
+        <div class="header">
+            <h2>📋 珍秀的班次動態</h2>
+        </div>
+        
+        <div class="control-panel">
+            <div id="statusDisplay" class="status-display status-off">
+                🔴 目前狀態：已下班
+            </div>
+            
+            <div class="control-buttons">
+                <button id="checkinBtn" class="btn btn-checkin" onclick="checkIn()">
+                    ⏰ 上班打卡
+                </button>
+                <button id="checkoutBtn" class="btn btn-checkout" onclick="checkOut()" disabled>
+                    🏃‍♂️ 下班打卡
+                </button>
+            </div>
+            
+            <div class="current-time">
+                目前時間：<span id="currentTime"></span>
+            </div>
+        </div>
+        
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>星期</th>
+                    <th>日期</th>
+                    <th>班次時間</th>
+                    <th>實際狀況</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleBody">
+                <tr class="work-day" data-day="1">
+                    <td>一</td>
+                    <td><span class="schedule-date">6/23</span></td>
+                    <td><span class="schedule-time">08:00-17:00</span></td>
+                    <td><span class="schedule-status">👋 已下班</span></td>
+                </tr>
+                <tr class="work-day" data-day="2">
+                    <td>二</td>
+                    <td><span class="schedule-date">6/24</span></td>
+                    <td><span class="schedule-time">08:00-17:00</span></td>
+                    <td><span class="schedule-status" id="todayStatus">⏳ 待上班</span></td>
+                </tr>
+                <tr class="work-day" data-day="3">
+                    <td>三</td>
+                    <td><span class="schedule-date">6/25</span></td>
+                    <td><span class="schedule-time">13:00-21:00</span></td>
+                    <td><span class="schedule-status">⏳ 待上班</span></td>
+                </tr>
+                <tr class="off-day" data-day="4">
+                    <td>四</td>
+                    <td><span class="schedule-date">6/26</span></td>
+                    <td><span class="schedule-time">🚫 休息</span></td>
+                    <td><span class="schedule-status">🚫 未排班</span></td>
+                </tr>
+                <tr class="work-day" data-day="5">
+                    <td>五</td>
+                    <td><span class="schedule-date">6/27</span></td>
+                    <td><span class="schedule-time">08:00-13:00</span></td>
+                    <td><span class="schedule-status">⏳ 待上班</span></td>
+                </tr>
+                <tr class="off-day" data-day="6">
+                    <td>六</td>
+                    <td><span class="schedule-date">6/28</span></td>
+                    <td><span class="schedule-time">🚫 休息</span></td>
+                    <td><span class="schedule-status">🚫 未排班</span></td>
+                </tr>
+                <tr class="off-day" data-day="0">
+                    <td>日</td>
+                    <td><span class="schedule-date">6/29</span></td>
+                    <td><span class="schedule-time">🚫 休息</span></td>
+                    <td><span class="schedule-status">🚫 未排班</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="editHint" class="edit-hint" style="display: none;">
+            💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
+            📋 <strong>狀態說明</strong>：⏳ 待上班(未到時間) → 💼 上班中(已打卡) → 👋 已下班(已下班) / 🤒 請假(未打卡) / 🚫 未排班(無班次)<br>
+            <button id="updateWeekBtn" class="update-week-btn" onclick="updateToNextWeek()">
+                📅 更新為下週日期
+            </button>
+        </div>
+        
+        <div class="notes">
+            <strong>📌 使用說明：</strong><br>
+            • 點擊「上班打卡」/「下班打卡」更新當日狀態<br>
+            • 實際情況會根據班次時間和打卡狀況動態顯示<br>
+            • 編輯班表功能有密碼保護，防止誤改
+        </div>
+        
+        <div class="edit-mode" style="text-align: center; margin-top: 20px;">
+            <button id="editToggle" class="toggle-btn" onclick="toggleEditMode()">
+                🔒 開啟編輯模式
+            </button>
+            <div style="font-size: 11px; color: #6c757d; margin-top: 8px;">需要密碼驗證</div>
+        </div>
+    </div>
+
+    <script>
+        let isWorking = false;
+        let checkinTime = null;
+        let editMode = false;
+        // 編輯密碼設定（可修改為您想要的密碼）
+        const editPassword = '1234';
+
+        const statusOptions = [
+            '⏳ 待上班',
+            '💼 上班中', 
+            '👋 已下班',
+            '🤒 請假',
+            '🚫 未排班'
+        ];
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-TW', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+            
+            // 更新當日高亮
+            updateTodayHighlight();
+        }
+
+        function updateTodayHighlight() {
+            const today = new Date();
+            const todayDateStr = `${today.getMonth() + 1}/${today.getDate()}`;
+            
+            // 移除所有現有的today樣式
+            document.querySelectorAll('tr.today').forEach(row => {
+                row.classList.remove('today');
+            });
+            
+            // 尋找今日日期
+            let foundToday = false;
+            document.querySelectorAll('.schedule-date').forEach(dateEl => {
+                const dateStr = dateEl.textContent.trim();
+                if (dateStr === todayDateStr) {
+                    const row = dateEl.closest('tr');
+                    row.classList.add('today');
+                    foundToday = true;
+                }
+            });
+            
+            // 如果沒找到今日日期，則高亮第一行
+            if (!foundToday) {
+                const firstRow = document.querySelector('#scheduleBody tr');
+                if (firstRow) {
+                    firstRow.classList.add('today');
+                }
+            }
+        }
+
+        function toggleEditMode() {
+            if (!editMode) {
+                // 進入編輯模式前要求密碼
+                const inputPassword = prompt('請輸入編輯密碼：');
+                if (inputPassword !== editPassword) {
+                    alert('密碼錯誤，無法進入編輯模式！');
+                    return;
+                }
+            }
+            
+            editMode = !editMode;
+            const toggleBtn = document.getElementById('editToggle');
+            const editHint = document.getElementById('editHint');
+            
+            if (editMode) {
+                toggleBtn.textContent = '💾 儲存編輯';
+                toggleBtn.classList.add('active');
+                editHint.style.display = 'block';
+                enableEdit();
+            } else {
+                toggleBtn.textContent = '🔒 開啟編輯模式';
+                toggleBtn.classList.remove('active');
+                editHint.style.display = 'none';
+                disableEdit();
+            }
+        }
+
+        function enableEdit() {
+            // 讓日期可編輯
+            document.querySelectorAll('.schedule-date').forEach(dateEl => {
+                dateEl.classList.add('editable-time');
+                dateEl.onclick = () => editDate(dateEl);
+            });
+            
+            // 讓所有班次時間都可編輯（包含休假日）
+            document.querySelectorAll('.schedule-time').forEach(timeEl => {
+                timeEl.classList.add('editable-time');
+                timeEl.onclick = () => editTime(timeEl);
+            });
+
+            // 讓狀況可編輯
+            document.querySelectorAll('.schedule-status').forEach(statusEl => {
+                if (statusEl.id !== 'todayStatus') { // 今日狀況由打卡系統控制
+                    statusEl.classList.add('editable-time');
+                    statusEl.onclick = () => editStatus(statusEl);
+                }
+            });
+        }
+
+        function disableEdit() {
+            document.querySelectorAll('.editable-time').forEach(el => {
+                el.classList.remove('editable-time');
+                el.onclick = null;
+            });
+        }
+
+        function editDate(dateEl) {
+            if (!editMode) return;
+            
+            const currentDate = dateEl.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentDate;
+            input.className = 'time-input';
+            input.placeholder = '6/24';
+            input.style.width = '60px';
+            
+            input.onblur = input.onkeypress = function(e) {
+                if (e.type === 'blur' || e.key === 'Enter') {
+                    const newDate = input.value.trim();
+                    dateEl.textContent = newDate || currentDate;
+                    dateEl.style.display = 'inline';
+                    input.remove();
+                    
+                    // 更新當日高亮
+                    updateTodayHighlight();
+                }
+            };
+            
+            dateEl.style.display = 'none';
+            dateEl.parentNode.appendChild(input);
+            input.focus();
+            input.select();
+        }
+
+        function editTime(timeEl) {
+            if (!editMode) return;
+            
+            const currentTime = timeEl.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTime;
+            input.className = 'time-input';
+            input.placeholder = '08:00-17:00 或 🚫 休息';
+            
+            input.onblur = input.onkeypress = function(e) {
+                if (e.type === 'blur' || e.key === 'Enter') {
+                    const newTime = input.value.trim();
+                    timeEl.textContent = newTime || currentTime;
+                    timeEl.style.display = 'inline';
+                    input.remove();
+                    
+                    // 根據時間更新行的樣式，保持today狀態
+                    const row = timeEl.closest('tr');
+                    const isToday = row.classList.contains('today');
+                    const statusEl = row.querySelector('.schedule-status');
+                    
+                    if (newTime === '🚫 休息' || newTime === '') {
+                        row.className = isToday ? 'today off-day' : 'off-day';
+                        // 自動更新對應狀態
+                        if (statusEl && statusEl.id !== 'todayStatus') {
+                            statusEl.textContent = '🚫 未排班';
+                        }
+                    } else {
+                        row.className = isToday ? 'today work-day' : 'work-day';
+                        // 如果從休息改為工作日，預設為待上班
+                        if (statusEl && statusEl.id !== 'todayStatus' && statusEl.textContent === '🚫 未排班') {
+                            statusEl.textContent = '⏳ 待上班';
+                        }
+                    }
+                }
+            };
+            
+            timeEl.style.display = 'none';
+            timeEl.parentNode.appendChild(input);
+            input.focus();
+            input.select();
+        }
+
+        function editStatus(statusEl) {
+            if (!editMode) return;
+            
+            const currentStatus = statusEl.textContent.trim();
+            const select = document.createElement('select');
+            select.className = 'status-select';
+            
+            statusOptions.forEach(option => {
+                const optionEl = document.createElement('option');
+                optionEl.value = option;
+                optionEl.textContent = option;
+                if (currentStatus === option) {
+                    optionEl.selected = true;
+                }
+                select.appendChild(optionEl);
+            });
+            
+            select.onblur = select.onchange = function() {
+                statusEl.textContent = select.value;
+                statusEl.style.display = 'inline';
+                select.remove();
+            };
+            
+            statusEl.style.display = 'none';
+            statusEl.parentNode.appendChild(select);
+            select.focus();
+        }
+
+        function checkIn() {
+            const now = new Date();
+            checkinTime = now;
+            isWorking = true;
+            
+            const statusDisplay = document.getElementById('statusDisplay');
+            statusDisplay.textContent = `🟢 目前狀態：在班中 (${now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'})})`;
+            statusDisplay.className = 'status-display status-on';
+            
+            document.getElementById('checkinBtn').disabled = true;
+            document.getElementById('checkoutBtn').disabled = false;
+            
+            document.getElementById('todayStatus').textContent = '💼 上班中';
+        }
+
+        function checkOut() {
+            const now = new Date();
+            isWorking = false;
+            
+            const statusDisplay = document.getElementById('statusDisplay');
+            statusDisplay.textContent = `🔴 目前狀態：已下班 (${now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'})})`;
+            statusDisplay.className = 'status-display status-off';
+            
+            document.getElementById('checkinBtn').disabled = false;
+            document.getElementById('checkoutBtn').disabled = true;
+            
+            document.getElementById('todayStatus').textContent = '👋 已下班';
+        }
+
+        function updateToNextWeek() {
+            if (!editMode) return;
+            
+            // 獲取所有日期元素
+            const dateElements = document.querySelectorAll('.schedule-date');
+            
+            if (dateElements.length === 0) return;
+            
+            // 解析第一個日期作為基準
+            const firstDateText = dateElements[0].textContent.trim();
+            const dateParts = firstDateText.split('/');
+            
+            if (dateParts.length !== 2) return;
+            
+            const month = parseInt(dateParts[0]);
+            const day = parseInt(dateParts[1]);
+            
+            // 建立基準日期（假設為當前年份）
+            const currentYear = new Date().getFullYear();
+            let baseDate = new Date(currentYear, month - 1, day);
+            
+            // 如果解析的日期無效，使用今天作為基準
+            if (isNaN(baseDate.getTime())) {
+                baseDate = new Date();
+            }
+            
+            // 加7天得到下週同一天
+            const nextWeekDate = new Date(baseDate);
+            nextWeekDate.setDate(baseDate.getDate() + 7);
+            
+            // 更新所有日期（按照一週的順序：一、二、三、四、五、六、日）
+            const weekdays = [1, 2, 3, 4, 5, 6, 0]; // 週一到週日的對應數字
+            
+            dateElements.forEach((dateEl, index) => {
+                if (index < weekdays.length) {
+                    // 計算這一週對應星期幾的日期
+                    const targetDate = new Date(nextWeekDate);
+                    const currentWeekday = nextWeekDate.getDay(); // 0=週日, 1=週一...
+                    const targetWeekday = weekdays[index];
+                    
+                    // 計算日期差異
+                    let dayDiff = targetWeekday - currentWeekday;
+                    if (dayDiff < 0) dayDiff += 7;
+                    
+                    targetDate.setDate(nextWeekDate.getDate() + dayDiff);
+                    
+                    // 格式化日期為 M/D 格式
+                    const formattedDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
+                    dateEl.textContent = formattedDate;
+                }
+            });
+            
+            // 重新檢查當日高亮
+            updateTodayHighlight();
+            
+            // 顯示更新成功訊息
+            const updateBtn = document.getElementById('updateWeekBtn');
+            const originalText = updateBtn.textContent;
+            updateBtn.textContent = '✅ 已更新！';
+            updateBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                updateBtn.textContent = originalText;
+                updateBtn.style.background = 'linear-gradient(135deg, #B22222, #8B0000)';
+            }, 2000);
+        }
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTodayHighlight();
+            // 每秒更新時間
+            setInterval(updateCurrentTime, 1000);
+            updateCurrentTime();
+        });
+    </script>
+</body>
+</html>
