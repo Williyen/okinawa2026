@@ -569,23 +569,23 @@
             switch (workStatus.status) {
                 case '💼 上班中':
                     statusIcon = '🟢';
-                    statusText = `目前狀態：上班中 (${timeStr})`;
+                    statusText = `目前狀態：上班中` ;
                     break;
                 case '⏳ 待上班':
                     statusIcon = '🟡';  
-                    statusText = `目前狀態：待上班 (${timeStr})`;
+                    statusText = `目前狀態：待上班` ;
                     break;
                 case '👋 已下班':
                     statusIcon = '🔴';
-                    statusText = `目前狀態：已下班 (${timeStr})`;
+                    statusText = `目前狀態：已下班` ;
                     break;
                 case '🚫 未排班':
                     statusIcon = '⚫';
-                    statusText = `目前狀態：今日休息 (${timeStr})`;
+                    statusText = `目前狀態：今日休息`;
                     break;
                 default:
                     statusIcon = '🟡';
-                    statusText = `目前狀態：待上班 (${timeStr})`;
+                    statusText = `目前狀態：待上班`;
                     break;
             }
             
