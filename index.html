@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>珍秀的班表告示板</title>
+    <title>珍秀的班次動態</title>
     <style>
         * {
             box-sizing: border-box;
@@ -367,7 +367,7 @@
                     <td>二</td>
                     <td><span class="schedule-date">6/24</span></td>
                     <td><span class="schedule-time">08:00-17:00</span></td>
-                    <td><span class="schedule-status" id="todayStatus">⏳ 待上班</span></td>
+                    <td><span class="schedule-status">⏳ 待上班</span></td>
                 </tr>
                 <tr class="work-day" data-day="3">
                     <td>三</td>
@@ -429,8 +429,8 @@
         <div class="notes">
             <strong>📌 使用說明：</strong><br>
             • 系統會根據當前時間和班次時間自動更新狀態<br>
-            • 開啟編輯模式可修改班表內容<br>
-            • 編輯班表功能有密碼保護，防止誤改
+            • 開啟編輯模式可修改班次安排<br>
+            • 編輯功能有密碼保護，防止誤改
         </div>
     </div>
 
@@ -541,7 +541,7 @@
             
             const workStatus = determineWorkStatus(scheduleTime, currentTime);
             
-            // 更新表格中的狀態
+            // 更新表格中的狀態（確保今日狀態會被更新）
             todayStatusEl.textContent = workStatus.status;
             
             // 更新主要狀態顯示
@@ -567,6 +567,10 @@
                 case '🚫 未排班':
                     statusIcon = '⚫';
                     statusText = `目前狀態：今日休息 (${timeStr})`;
+                    break;
+                default:
+                    statusIcon = '🟡';
+                    statusText = `目前狀態：待上班 (${timeStr})`;
                     break;
             }
             
@@ -614,9 +618,13 @@
                 timeEl.onclick = () => editTime(timeEl);
             });
 
-            // 讓狀況可編輯（非今日的可以手動設置）
+            // 讓狀況可編輯（除了今日狀況，今日狀況由系統自動判斷）
             document.querySelectorAll('.schedule-status').forEach(statusEl => {
-                if (statusEl.id !== 'todayStatus') { // 今日狀況由系統自動判斷
+                // 檢查是否為今日所在行的狀態
+                const row = statusEl.closest('tr');
+                const isToday = row && row.classList.contains('today');
+                
+                if (!isToday) { // 非今日的狀況可以手動編輯
                     statusEl.classList.add('editable-time');
                     statusEl.onclick = () => editStatus(statusEl);
                 }
@@ -685,13 +693,13 @@
                     if (newTime === '🚫 休息' || newTime === '') {
                         row.className = isToday ? 'today off-day' : 'off-day';
                         // 非今日的自動更新對應狀態
-                        if (statusEl && statusEl.id !== 'todayStatus') {
+                        if (statusEl && !isToday) {
                             statusEl.textContent = '🚫 未排班';
                         }
                     } else {
                         row.className = isToday ? 'today work-day' : 'work-day';
                         // 如果從休息改為工作日，預設為待上班
-                        if (statusEl && statusEl.id !== 'todayStatus' && statusEl.textContent === '🚫 未排班') {
+                        if (statusEl && !isToday && statusEl.textContent === '🚫 未排班') {
                             statusEl.textContent = '⏳ 待上班';
                         }
                     }
