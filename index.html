@@ -560,7 +560,7 @@
             todayStatusEl.textContent = workStatus.status;
             
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('zh-TW', {hour12: true, hour: '2-digit', minute: '2-digit'});
+            const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
             
             let statusText = '';
             let statusIcon = '';
