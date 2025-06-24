@@ -323,6 +323,13 @@
             
             <div class="current-time">
                 目前時間：<span id="currentTime"></span>
+                <script>
+                   setInterval(() => {
+                   const now = new Date();
+                   const timeStr = `${now.getMonth()+1}/${now.getDate()}, ${now.toTimeString().slice(0, 8)}`;
+                   document.getElementById('currentTime').textContent = timeStr;
+                   }, 1000);
+                </script>
             </div>
         </div>
         
