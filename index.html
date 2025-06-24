@@ -273,8 +273,61 @@
             font-size: 16px;
             text-align: center;
         }
-        
         .update-week-btn {
+            background: linear-gradient(135deg, #B22222, #8B0000);
+            color: white;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 12px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(178, 34, 34, 0.4);
+        }
+        
+        .update-week-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(178, 34, 34, 0.6);
+        }
+        
+        .export-import-section {
+            border-top: 1px solid rgba(139, 0, 0, 0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .export-btn, .import-btn {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            margin: 5px;
+            padding: 8px 16px;
+            font-size: 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+        }
+        
+        .export-btn:hover, .import-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .data-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
             background: linear-gradient(135deg, #B22222, #8B0000);
             color: white;
             margin-top: 15px;
@@ -360,31 +413,31 @@
                 <tr class="work-day" data-day="1">
                     <td>一</td>
                     <td><span class="schedule-date">6/23</span></td>
-                    <td><span class="schedule-time">08:00-17:00</span></td>
+                    <td><span class="schedule-time">08:30-14:30</span></td>
                     <td><span class="schedule-status">👋 已下班</span></td>
                 </tr>
                 <tr class="work-day" data-day="2">
                     <td>二</td>
                     <td><span class="schedule-date">6/24</span></td>
-                    <td><span class="schedule-time">08:00-17:00</span></td>
+                    <td><span class="schedule-time">08:30-14:30</span></td>
                     <td><span class="schedule-status">⏳ 待上班</span></td>
                 </tr>
                 <tr class="work-day" data-day="3">
                     <td>三</td>
                     <td><span class="schedule-date">6/25</span></td>
-                    <td><span class="schedule-time">13:00-21:00</span></td>
+                    <td><span class="schedule-time">08:30-14:30</span></td>
                     <td><span class="schedule-status">⏳ 待上班</span></td>
                 </tr>
-                <tr class="off-day" data-day="4">
+                <tr class="work-day" data-day="4">
                     <td>四</td>
                     <td><span class="schedule-date">6/26</span></td>
-                    <td><span class="schedule-time">🚫 休息</span></td>
-                    <td><span class="schedule-status">🚫 未排班</span></td>
+                    <td><span class="schedule-time">08:30-14:30</span></td>
+                    <td><span class="schedule-status">⏳ 待上班</span></td>
                 </tr>
                 <tr class="work-day" data-day="5">
                     <td>五</td>
                     <td><span class="schedule-date">6/27</span></td>
-                    <td><span class="schedule-time">08:00-13:00</span></td>
+                    <td><span class="schedule-time">08:30-14:30</span></td>
                     <td><span class="schedule-status">⏳ 待上班</span></td>
                 </tr>
                 <tr class="off-day" data-day="6">
@@ -412,6 +465,11 @@
         <div id="editControls" class="edit-controls" style="display: none;">
             <h3>📝 編輯控制台</h3>
             
+            <div class="data-warning">
+                ⚠️ <strong>資料保存提醒</strong>：修改的資料只在本次瀏覽中有效，關閉頁面後會恢復原始狀態。<br>
+                請使用下方的「匯出資料」功能保存您的修改！
+            </div>
+            
             <div class="edit-hint">
                 💡 <strong>編輯模式</strong>：點擊日期、班次時間和實際情況即可修改<br>
                 📋 <strong>狀態說明</strong>：<br>
@@ -427,14 +485,20 @@
                     📅 更新為下週日期
                 </button>
             </div>
+            
+            <div class="export-import-section">
+                <h4 style="margin: 0 0 10px 0; color: #8B0000; font-size: 14px; text-align: center;">💾 資料保存與載入</h4>
+                <div style="text-align: center;">
+                    <button class="export-btn" onclick="exportData()">📤 匯出資料</button>
+                    <button class="import-btn" onclick="document.getElementById('importFile').click()">📥 匯入資料</button>
+                    <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
+                </div>
+                <div style="font-size: 10px; color: #6c757d; text-align: center; margin-top: 8px;">
+                    匯出的資料檔案可在下次開啟時匯入，恢復您的設定
+                </div>
+            </div>
         </div>
         
-        <div class="notes">
-            <strong>📌 使用說明：</strong><br>
-            • 系統會根據當前時間和班次時間自動更新狀態<br>
-            • 開啟編輯模式可修改班次安排<br>
-            • 編輯功能有密碼保護，防止誤改
-        </div>
     </div>
 
     <script>
@@ -759,53 +823,80 @@
             select.focus();
         }
 
+        function initializeCurrentWeek() {
+            // 獲取當前日期
+            const today = new Date();
+            
+            // 計算本週一的日期（週一為一週的開始）
+            const dayOfWeek = today.getDay(); // 0=週日, 1=週一, ..., 6=週六
+            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 週日需要特殊處理
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - daysFromMonday);
+            
+            // 計算本週的所有日期
+            const weekDates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                weekDates.push(date);
+            }
+            
+            // 更新表格中的日期
+            const dateElements = document.querySelectorAll('.schedule-date');
+            dateElements.forEach((dateEl, index) => {
+                if (index < weekDates.length) {
+                    const targetDate = weekDates[index];
+                    const formattedDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
+                    dateEl.textContent = formattedDate;
+                }
+            });
+        }
+
         function updateToNextWeek() {
             if (!editMode) return;
             
-            // 獲取所有日期元素
-            const dateElements = document.querySelectorAll('.schedule-date');
+            // 獲取當前顯示的第一個日期
+            const firstDateEl = document.querySelector('.schedule-date');
+            if (!firstDateEl) return;
             
-            if (dateElements.length === 0) return;
-            
-            // 解析第一個日期作為基準
-            const firstDateText = dateElements[0].textContent.trim();
+            const firstDateText = firstDateEl.textContent.trim();
             const dateParts = firstDateText.split('/');
             
             if (dateParts.length !== 2) return;
             
             const month = parseInt(dateParts[0]);
             const day = parseInt(dateParts[1]);
-            
-            // 建立基準日期（假設為當前年份）
             const currentYear = new Date().getFullYear();
-            let baseDate = new Date(currentYear, month - 1, day);
+            
+            // 建立當前週一的日期
+            let currentMonday = new Date(currentYear, month - 1, day);
             
             // 如果解析的日期無效，使用今天作為基準
-            if (isNaN(baseDate.getTime())) {
-                baseDate = new Date();
+            if (isNaN(currentMonday.getTime())) {
+                const today = new Date();
+                const dayOfWeek = today.getDay();
+                const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                currentMonday = new Date(today);
+                currentMonday.setDate(today.getDate() - daysFromMonday);
             }
             
-            // 加7天得到下週同一天
-            const nextWeekDate = new Date(baseDate);
-            nextWeekDate.setDate(baseDate.getDate() + 7);
+            // 加7天得到下週一
+            const nextMonday = new Date(currentMonday);
+            nextMonday.setDate(currentMonday.getDate() + 7);
             
-            // 更新所有日期（按照一週的順序：一、二、三、四、五、六、日）
-            const weekdays = [1, 2, 3, 4, 5, 6, 0]; // 週一到週日的對應數字
+            // 計算下週的所有日期
+            const weekDates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(nextMonday);
+                date.setDate(nextMonday.getDate() + i);
+                weekDates.push(date);
+            }
             
+            // 更新表格中的日期
+            const dateElements = document.querySelectorAll('.schedule-date');
             dateElements.forEach((dateEl, index) => {
-                if (index < weekdays.length) {
-                    // 計算這一週對應星期幾的日期
-                    const targetDate = new Date(nextWeekDate);
-                    const currentWeekday = nextWeekDate.getDay(); // 0=週日, 1=週一...
-                    const targetWeekday = weekdays[index];
-                    
-                    // 計算日期差異
-                    let dayDiff = targetWeekday - currentWeekday;
-                    if (dayDiff < 0) dayDiff += 7;
-                    
-                    targetDate.setDate(nextWeekDate.getDate() + dayDiff);
-                    
-                    // 格式化日期為 M/D 格式
+                if (index < weekDates.length) {
+                    const targetDate = weekDates[index];
                     const formattedDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
                     dateEl.textContent = formattedDate;
                 }
@@ -830,10 +921,130 @@
             }, 2000);
         }
 
+        function exportData() {
+            // 收集所有班表資料
+            const scheduleData = {
+                exportTime: new Date().toISOString(),
+                todayStatusManuallySet: todayStatusManuallySet,
+                scheduleRows: []
+            };
+            
+            // 取得所有班表行資料
+            document.querySelectorAll('#scheduleBody tr').forEach((row, index) => {
+                const dateEl = row.querySelector('.schedule-date');
+                const timeEl = row.querySelector('.schedule-time');
+                const statusEl = row.querySelector('.schedule-status');
+                const dayAttr = row.getAttribute('data-day');
+                const isToday = row.classList.contains('today');
+                const isWorkDay = row.classList.contains('work-day');
+                
+                scheduleData.scheduleRows.push({
+                    index: index,
+                    day: dayAttr,
+                    date: dateEl ? dateEl.textContent.trim() : '',
+                    time: timeEl ? timeEl.textContent.trim() : '',
+                    status: statusEl ? statusEl.textContent.trim() : '',
+                    isToday: isToday,
+                    isWorkDay: isWorkDay
+                });
+            });
+            
+            // 建立下載連結
+            const dataStr = JSON.stringify(scheduleData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `珍秀班次資料_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
+            
+            // 顯示成功訊息
+            alert('資料已匯出！請保存檔案，下次可用來匯入恢復設定。');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const scheduleData = JSON.parse(e.target.result);
+                    
+                    // 驗證資料格式
+                    if (!scheduleData.scheduleRows || !Array.isArray(scheduleData.scheduleRows)) {
+                        throw new Error('無效的資料格式');
+                    }
+                    
+                    // 恢復資料
+                    scheduleData.scheduleRows.forEach((rowData, index) => {
+                        const row = document.querySelector(`#scheduleBody tr:nth-child(${index + 1})`);
+                        if (!row) return;
+                        
+                        // 更新日期
+                        const dateEl = row.querySelector('.schedule-date');
+                        if (dateEl && rowData.date) {
+                            dateEl.textContent = rowData.date;
+                        }
+                        
+                        // 更新時間
+                        const timeEl = row.querySelector('.schedule-time');
+                        if (timeEl && rowData.time) {
+                            timeEl.textContent = rowData.time;
+                        }
+                        
+                        // 更新狀態
+                        const statusEl = row.querySelector('.schedule-status');
+                        if (statusEl && rowData.status) {
+                            statusEl.textContent = rowData.status;
+                        }
+                        
+                        // 更新行樣式
+                        row.className = '';
+                        if (rowData.isToday) row.classList.add('today');
+                        if (rowData.isWorkDay) {
+                            row.classList.add('work-day');
+                        } else {
+                            row.classList.add('off-day');
+                        }
+                        row.setAttribute('data-day', rowData.day);
+                    });
+                    
+                    // 恢復手動設置標記
+                    if (scheduleData.todayStatusManuallySet !== undefined) {
+                        todayStatusManuallySet = scheduleData.todayStatusManuallySet;
+                    }
+                    
+                    // 更新顯示
+                    updateTodayHighlight();
+                    updateTodayStatus();
+                    
+                    alert(`資料匯入成功！\n匯出時間：${new Date(scheduleData.exportTime).toLocaleString('zh-TW')}`);
+                    
+                } catch (error) {
+                    alert('匯入失敗：檔案格式不正確或已損壞。\n請確認選擇的是正確的資料檔案。');
+                    console.error('Import error:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+            // 清除檔案選擇，允許重複選擇同一檔案
+            event.target.value = '';
+        }
+
         // 頁面載入時初始化
         document.addEventListener('DOMContentLoaded', function() {
+            // 首先初始化當週日期
+            initializeCurrentWeek();
+            
+            // 然後更新當日高亮和狀態
             updateTodayHighlight();
             updateTodayStatus();
+            
             // 每秒更新時間和狀態
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
