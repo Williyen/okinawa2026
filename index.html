@@ -329,8 +329,8 @@
         <table class="schedule-table">
             <thead>
                 <tr>
-                    <th>星期</th>
                     <th>日期</th>
+                    <th>星期</th>
                     <th>班次時間</th>
                     <th>實際狀況</th>
                 </tr>
@@ -491,9 +491,10 @@
                 row.className = rowClass;
                 row.setAttribute('data-day', dayIndex);
                 
+                // 將日期和星期的位置互換
                 row.innerHTML = `
-                    <td>${dayName}</td>
                     <td><span class="schedule-date">${dateStr}</span></td>
+                    <td>${dayName}</td>
                     <td><span class="schedule-time">${timeStr}</span></td>
                     <td><span class="schedule-status">${statusStr}</span></td>
                 `;
@@ -510,7 +511,8 @@
                 minute: '2-digit',
                 second: '2-digit'
             });
-            document.getElementById('currentTime').textContent = timeString;
+            const dateString = `${now.getMonth() + 1}/${now.getDate()}`;
+            document.getElementById('currentTime').textContent = `${dateString}, ${timeString}`;
             
             updateTodayHighlight();
             updateTodayStatus();
