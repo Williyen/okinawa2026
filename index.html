@@ -26,44 +26,226 @@
     <!-- ===================================================== -->
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --glass-primary: rgba(255, 255, 255, 0.25);
+            --glass-secondary: rgba(255, 255, 255, 0.18);
+            --glass-accent: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-border-strong: rgba(255, 255, 255, 0.5);
+            --water-blue: rgba(219, 234, 254, 0.4);
+            --water-cyan: rgba(236, 253, 245, 0.3);
+            --water-teal: rgba(254, 252, 232, 0.35);
+            --bubble-color: rgba(255, 255, 255, 0.7);
+            --text-glass: #1f2937;
+            --text-soft: #374151;
+            --text-muted: #6b7280;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --border-radius: 24px;
+            --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
-            font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 25%, #fefce8 50%, #fef7ed 75%, #fdf2f8 100%);
+            background-size: 300% 300%;
+            animation: waterFlow 25s ease infinite;
             min-height: 100vh;
+            color: var(--text-soft);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes waterFlow {
+            0% { background-position: 0% 50%; }
+            20% { background-position: 100% 0%; }
+            40% { background-position: 100% 100%; }
+            60% { background-position: 0% 100%; }
+            80% { background-position: 0% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 水泡動畫背景 */
+        .water-bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            background: var(--bubble-color);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: bubble-float 20s infinite linear;
+        }
+
+        .bubble:nth-child(1) { width: 30px; height: 30px; left: 10%; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 15px; height: 15px; left: 20%; animation-delay: 3s; }
+        .bubble:nth-child(3) { width: 40px; height: 40px; left: 30%; animation-delay: 6s; }
+        .bubble:nth-child(4) { width: 20px; height: 20px; left: 40%; animation-delay: 9s; }
+        .bubble:nth-child(5) { width: 35px; height: 35px; left: 50%; animation-delay: 12s; }
+        .bubble:nth-child(6) { width: 18px; height: 18px; left: 60%; animation-delay: 15s; }
+        .bubble:nth-child(7) { width: 25px; height: 25px; left: 70%; animation-delay: 18s; }
+        .bubble:nth-child(8) { width: 32px; height: 32px; left: 80%; animation-delay: 21s; }
+        .bubble:nth-child(9) { width: 12px; height: 12px; left: 90%; animation-delay: 24s; }
+
+        /* 可愛生物背景 */
+        .floating-creatures {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .creature {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+            animation: creature-swim 25s infinite linear;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .creature:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .creature:nth-child(2) { left: 15%; animation-delay: 4s; }
+        .creature:nth-child(3) { left: 25%; animation-delay: 8s; }
+        .creature:nth-child(4) { left: 35%; animation-delay: 12s; }
+        .creature:nth-child(5) { left: 45%; animation-delay: 16s; }
+        .creature:nth-child(6) { left: 55%; animation-delay: 20s; }
+        .creature:nth-child(7) { left: 65%; animation-delay: 24s; }
+        .creature:nth-child(8) { left: 75%; animation-delay: 28s; }
+        .creature:nth-child(9) { left: 85%; animation-delay: 32s; }
+        .creature:nth-child(10) { left: 95%; animation-delay: 36s; }
+
+        @keyframes creature-swim {
+            0% {
+                transform: translateY(120vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.6;
+            }
+            25% {
+                transform: translateY(75vh) translateX(30px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(50vh) translateX(-20px) rotate(-3deg);
+            }
+            75% {
+                transform: translateY(25vh) translateX(40px) rotate(8deg);
+            }
+            95% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(-10px) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bubble-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 水波紋效果 */
+        .water-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: ripple 4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
         
         .schedule-board {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: none;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
+            background: var(--glass-primary);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 750px;
             margin: 0 auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 20px rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glass), inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-board::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: glass-shine 3s ease-in-out infinite;
+        }
+
+        @keyframes glass-shine {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         .schedule-board:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-glass), 0 25px 50px rgba(0, 191, 255, 0.3);
+            border-color: var(--glass-border-strong);
         }
         
         .header {
             text-align: center;
-            background: linear-gradient(135deg, #FF8000, #FFD306);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
+            background: var(--water-blue);
+            backdrop-filter: blur(20px);
+            color: var(--text-glass);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 35px;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.4);
+            border: 1px solid var(--glass-border);
         }
 
         .header::before {
@@ -73,153 +255,271 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: shimmer 3s infinite;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: water-swirl 8s linear infinite;
         }
 
-        @keyframes shimmer {
+        @keyframes water-swirl {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
         .header h2 {
             margin: 0;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             position: relative;
             z-index: 1;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+        }
+
+        .header::after {
+            content: '🌿';
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            animation: water-drop 4s ease-in-out infinite;
+        }
+
+        @keyframes water-drop {
+            0%, 100% { 
+                transform: translateY(-50%) scale(1) rotate(0deg); 
+                filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.3));
+            }
+            50% { 
+                transform: translateY(-60%) scale(1.1) rotate(10deg); 
+                filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.5));
+            }
         }
         
         .control-panel {
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid rgba(222, 226, 230, 0.5);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
+            background: var(--glass-secondary);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 35px;
             text-align: center;
-            backdrop-filter: blur(5px);
+            position: relative;
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.2);
         }
         
         .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
+            padding: 16px 32px;
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 5px;
+            transition: var(--transition);
+            margin: 10px;
             display: inline-block;
+            background: var(--water-cyan);
+            backdrop-filter: blur(15px);
+            color: var(--text-glass);
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 191, 255, 0.4);
+            background: var(--water-teal);
+            border-color: var(--glass-border-strong);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
         }
         
         .status-display {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 600;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            animation: pulse 2s infinite;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            transition: var(--transition);
+            animation: water-pulse 4s ease-in-out infinite;
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
+        .status-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: water-shine 4s infinite;
+        }
+
+        @keyframes water-shine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes water-pulse {
+            0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
         }
         
         .status-working {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
-            color: #155724;
-            border: 2px solid #27ae60;
-            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
+            backdrop-filter: blur(20px);
+            color: #065f46;
+            border-color: rgba(34, 197, 94, 0.3);
         }
         
         .status-waiting {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            color: #856404;
-            border: 2px solid #ffc107;
-            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.15));
+            backdrop-filter: blur(20px);
+            color: #92400e;
+            border-color: rgba(251, 191, 36, 0.3);
         }
         
         .status-off {
-            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-            color: #721c24;
-            border: 2px solid #e74c3c;
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+            backdrop-filter: blur(20px);
+            color: #991b1b;
+            border-color: rgba(239, 68, 68, 0.3);
         }
         
         .status-nowork {
-            background: linear-gradient(135deg, #e2e3e5, #d6d8db);
-            color: #383d41;
-            border: 2px solid #6c757d;
-            box-shadow: 0 0 20px rgba(108, 117, 125, 0.3);
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(100, 116, 139, 0.15));
+            backdrop-filter: blur(20px);
+            color: #475569;
+            border-color: rgba(148, 163, 184, 0.3);
         }
         
         .current-time {
-            font-size: 16px;
-            color: #495057;
+            font-size: 20px;
+            color: var(--text-glass);
             font-weight: 500;
-            background: rgba(255, 255, 255, 0.7);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: var(--glass-accent);
+            backdrop-filter: blur(20px);
+            padding: 15px 25px;
+            border-radius: 30px;
             display: inline-block;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: time-float 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes time-float {
+            0% { 
+                transform: translateY(0);
+                box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.2);
+            }
+            100% { 
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 191, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+            }
         }
         
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            border-radius: 12px;
+            margin-bottom: 30px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-glass), inset 0 1px 0 rgba(255,255,255,0.1);
+            background: var(--glass-secondary);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
         }
         
         .schedule-table th {
-            background: linear-gradient(135deg, #FF8000, #FFD306);
-            color: white;
-            padding: 15px 10px;
+            background: var(--water-blue);
+            backdrop-filter: blur(20px);
+            color: var(--text-glass);
+            padding: 20px 15px;
             text-align: center;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            position: relative;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .schedule-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
         }
         
         .schedule-table td {
-            padding: 12px 8px;
+            padding: 18px 12px;
             text-align: center;
-            border: 1px solid rgba(222, 226, 230, 0.5);
-            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 16px;
             position: relative;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            color: var(--text-soft);
         }
 
         .schedule-table tr:hover td {
-            background: rgba(139, 0, 0, 0.05);
-            transform: scale(1.01);
+            background: var(--water-cyan);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 191, 255, 0.2);
+            border-color: var(--glass-border-strong);
         }
         
         .today {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border: 2px solid #ffc107;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2)) !important;
+            backdrop-filter: blur(20px) !important;
+            color: #78350f !important;
             font-weight: 700;
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
-            animation: glow 2s infinite alternate;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: today-glow 3s ease-in-out infinite alternate;
+            position: relative;
+            border: 2px solid rgba(251, 191, 36, 0.4) !important;
         }
 
-        @keyframes glow {
-            0% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); }
-            100% { box-shadow: 0 0 25px rgba(255, 193, 7, 0.8); }
+        @keyframes today-glow {
+            0% { 
+                box-shadow: 0 0 30px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+            }
+            100% { 
+                box-shadow: 0 0 40px rgba(251, 191, 36, 0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+            }
         }
         
         .work-day {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(16, 185, 129, 0.05));
         }
         
         .off-day {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #6c757d;
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.08), rgba(100, 116, 139, 0.05));
+            color: var(--text-muted);
+        }
+
+        /* 狀態圖標 */
+        .status-icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.3em;
+            animation: icon-float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(0,191,255,0.3));
+        }
+
+        @keyframes icon-float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
         }
         
         /* PDF列印樣式 */
@@ -227,6 +527,12 @@
             body {
                 background: white !important;
                 font-size: 12px;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            .water-bubbles, .water-ripple {
+                display: none !important;
             }
             
             .schedule-board {
@@ -237,12 +543,14 @@
                 padding: 20px;
                 margin: 0;
                 max-width: none;
+                border: 2px solid #0099cc !important;
             }
             
             .header {
-                background: #8B0000 !important;
+                background: #0099cc !important;
+                color: white !important;
                 -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color-adjust: exact;
             }
             
             .control-panel {
@@ -252,87 +560,192 @@
             .schedule-table {
                 box-shadow: none !important;
                 border: 2px solid #000 !important;
+                background: white !important;
             }
             
             .schedule-table th {
-                background: #8B0000 !important;
+                background: #0099cc !important;
+                color: white !important;
                 -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color-adjust: exact;
                 border: 1px solid #000 !important;
             }
             
             .schedule-table td {
                 border: 1px solid #000 !important;
+                background: white !important;
+                color: black !important;
             }
             
             .today {
-                background: #fff3cd !important;
+                background: #fbbf24 !important;
+                color: #78350f !important;
                 border: 2px solid #000 !important;
                 -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color-adjust: exact;
             }
             
             .work-day {
-                background: #d4edda !important;
+                background: #dcfce7 !important;
                 -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color-adjust: exact;
             }
         }
 
         /* 響應式設計 */
         @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
             .schedule-board {
-                padding: 20px;
-                margin: 10px;
+                padding: 30px 25px;
+                margin: 0;
+            }
+            
+            .header h2 {
+                font-size: 26px;
             }
             
             .schedule-table th,
             .schedule-table td {
-                padding: 8px 4px;
-                font-size: 11px;
+                padding: 15px 8px;
+                font-size: 14px;
             }
 
             .btn {
+                padding: 14px 24px;
+                font-size: 14px;
+                margin: 8px 4px;
+            }
+
+            .status-display {
+                font-size: 20px;
+                padding: 22px;
+            }
+
+            .current-time {
+                font-size: 18px;
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .schedule-table th,
+            .schedule-table td {
+                padding: 12px 6px;
+                font-size: 13px;
+            }
+
+            .header h2 {
+                font-size: 22px;
+            }
+
+            .status-display {
+                font-size: 18px;
+                padding: 20px;
+            }
+
+            .current-time {
+                font-size: 16px;
                 padding: 10px 16px;
-                font-size: 12px;
-                margin: 3px;
             }
         }
 
         /* 載入動畫 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes glass-fade-in {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95); 
+                backdrop-filter: blur(0px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+                backdrop-filter: blur(30px);
+            }
         }
 
         .schedule-board {
-            animation: fadeIn 0.8s ease;
+            animation: glass-fade-in 1.2s ease-out;
+        }
+
+        .schedule-table tr {
+            animation: glass-fade-in 1s ease-out;
+        }
+
+        .schedule-table tr:nth-child(1) { animation-delay: 0.1s; }
+        .schedule-table tr:nth-child(2) { animation-delay: 0.2s; }
+        .schedule-table tr:nth-child(3) { animation-delay: 0.3s; }
+        .schedule-table tr:nth-child(4) { animation-delay: 0.4s; }
+        .schedule-table tr:nth-child(5) { animation-delay: 0.5s; }
+        .schedule-table tr:nth-child(6) { animation-delay: 0.6s; }
+        .schedule-table tr:nth-child(7) { animation-delay: 0.7s; }
+        .schedule-table tr:nth-child(8) { animation-delay: 0.8s; }
+
+        /* 深色模式支援 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-glass: #bfdbfe;
+                --text-soft: #e2e8f0;
+                --text-muted: #94a3b8;
+                --glass-primary: rgba(30, 58, 138, 0.2);
+                --glass-secondary: rgba(59, 130, 246, 0.15);
+                --glass-accent: rgba(147, 197, 253, 0.1);
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 水泡背景 -->
+    <div class="water-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- 可愛生物背景 -->
+    <div class="floating-creatures">
+        <div class="creature">🐠</div>
+        <div class="creature">🐟</div>
+        <div class="creature">🐡</div>
+        <div class="creature">🦋</div>
+        <div class="creature">🐝</div>
+        <div class="creature">🦀</div>
+        <div class="creature">🐙</div>
+        <div class="creature">🐚</div>
+        <div class="creature">🌸</div>
+        <div class="creature">🍃</div>
+    </div>
+
     <div class="schedule-board">
         <div class="header">
-            <h2>📋 珍秀的班次動態</h2>
+            <h2>珍秀的班次動態</h2>
         </div>
         
         <div class="control-panel">
             <div id="statusDisplay" class="status-display status-waiting">
-                ⏳ 現在狀態：待上班
+                <span class="status-icon">⏳</span>現在狀態：待上班
             </div>
             
             <div class="current-time">
-                目前時間：<span id="currentTime"></span>
+                🌱 目前時間：<span id="currentTime"></span>
             </div>
         </div>
         
         <table class="schedule-table">
             <thead>
                 <tr>
-                    <th>日期</th>
-                    <th>星期</th>
-                    <th>班次時間</th>
-                    <th>實際狀況</th>
+                    <th>🌸 日期</th>
+                    <th>🌱 星期</th>
+                    <th>⏰ 班次時間</th>
+                    <th>🦋 實際狀況</th>
                 </tr>
             </thead>
             <tbody id="scheduleBody">
@@ -341,9 +754,10 @@
         </table>
         
         <div style="text-align: center;">
-            <button id="pdfBtn" class="btn btn-info" onclick="generatePDF()">
-                📄 輸出PDF
+            <button id="pdfBtn" class="btn" onclick="generatePDF()">
+                🌿 輸出PDF
             </button>
+        </div>
     </div>
 
     <script>
@@ -384,35 +798,63 @@
 
         function determineWorkStatus(scheduleTime, currentTime) {
             if (scheduleTime.includes('🚫') || scheduleTime === '') {
-                return { status: '🚫 未排班', className: 'status-nowork' };
+                return { 
+                    status: '🚫 未排班', 
+                    className: 'status-nowork',
+                    icon: '🌙'
+                };
             }
             
             const timeMatch = scheduleTime.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
             if (!timeMatch) {
-                return { status: '🚫 未排班', className: 'status-nowork' };
+                return { 
+                    status: '🚫 未排班', 
+                    className: 'status-nowork',
+                    icon: '🌙'
+                };
             }
             
             const startTime = parseTime(`${timeMatch[1]}:${timeMatch[2]}`);
             const endTime = parseTime(`${timeMatch[3]}:${timeMatch[4]}`);
             
             if (currentTime < startTime) {
-                return { status: '⏳ 待上班', className: 'status-waiting' };
+                return { 
+                    status: '⏳ 待上班', 
+                    className: 'status-waiting',
+                    icon: '🌅'
+                };
             } else if (currentTime >= startTime && currentTime < endTime) {
-                return { status: '💼 上班中', className: 'status-working' };
+                return { 
+                    status: '💼 上班中', 
+                    className: 'status-working',
+                    icon: '🌞'
+                };
             } else {
-                return { status: '👋 已下班', className: 'status-off' };
+                return { 
+                    status: '👋 已下班', 
+                    className: 'status-off',
+                    icon: '🌺'
+                };
             }
         }
 
         // 修復版：計算指定日期的工作狀態
         function determineWorkStatusForDate(scheduleTime, targetDate) {
             if (scheduleTime.includes('🚫') || scheduleTime === '') {
-                return { status: '🚫 未排班', className: 'status-nowork' };
+                return { 
+                    status: '🚫 未排班', 
+                    className: 'status-nowork',
+                    icon: '🌙'
+                };
             }
             
             const timeMatch = scheduleTime.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
             if (!timeMatch) {
-                return { status: '🚫 未排班', className: 'status-nowork' };
+                return { 
+                    status: '🚫 未排班', 
+                    className: 'status-nowork',
+                    icon: '🌙'
+                };
             }
             
             const now = new Date();
@@ -421,7 +863,11 @@
             
             // 如果是未來的日期，顯示待上班
             if (target > today) {
-                return { status: '⏳ 待上班', className: 'status-waiting' };
+                return { 
+                    status: '⏳ 待上班', 
+                    className: 'status-waiting',
+                    icon: '🌅'
+                };
             }
             
             // 如果是今天，根據當前時間判斷
@@ -432,25 +878,36 @@
             
             // 如果是過去的日期，顯示已下班
             if (target < today) {
-                return { status: '👋 已下班', className: 'status-off' };
+                return { 
+                    status: '👋 已下班', 
+                    className: 'status-off',
+                    icon: '🌺'
+                };
             }
             
-            return { status: '⏳ 待上班', className: 'status-waiting' };
+            return { 
+                status: '⏳ 待上班', 
+                className: 'status-waiting',
+                icon: '🌅'
+            };
         }
 
         // 生成班表HTML
         function generateScheduleTable() {
             const scheduleMap = parseScheduleConfig();
-            const dayNames = ['', '一', '二', '三', '四', '五', '六', '日']; // 索引0不用，1-7對應週一到週日
+            const dayNames = ['日', '一', '二', '三', '四', '五', '六']; // 索引0-6對應週日到週六
             const scheduleBody = document.getElementById('scheduleBody');
             
-            // 獲取本週日期
+            // 獲取本週日期 - 修正版
             const today = new Date();
-            const dayOfWeek = today.getDay();
-            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            const todayDayOfWeek = today.getDay(); // 0=週日, 1=週一, ..., 6=週六
+            
+            // 計算本週一的日期
+            const daysFromMonday = todayDayOfWeek === 0 ? 6 : todayDayOfWeek - 1;
             const monday = new Date(today);
             monday.setDate(today.getDate() - daysFromMonday);
             
+            // 生成本週七天的日期
             const weekDates = [];
             for (let i = 0; i < 7; i++) {
                 const date = new Date(monday);
@@ -460,23 +917,26 @@
             
             // 生成表格行（週一到週日：1-7）
             scheduleBody.innerHTML = '';
-            for (let i = 1; i <= 7; i++) {
-                const dayIndex = i; // 1=週一, 2=週二, ..., 7=週日
-                const dateIndex = i - 1; // 陣列索引 0-6
-                const dayName = dayNames[dayIndex];
-                const targetDate = weekDates[dateIndex];
+            for (let i = 0; i < 7; i++) {
+                const targetDate = weekDates[i];
+                const targetDayOfWeek = targetDate.getDay(); // 0=週日, 1=週一, ..., 6=週六
+                
+                // 將 JavaScript 的 getDay() 轉換為我們的編號系統 (1=週一, 7=週日)
+                const scheduleDay = targetDayOfWeek === 0 ? 7 : targetDayOfWeek;
+                
+                const dayName = dayNames[targetDayOfWeek];
                 const dateStr = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
                 
-                const hasSchedule = scheduleMap.has(dayIndex);
+                const hasSchedule = scheduleMap.has(scheduleDay);
                 let timeStr, statusStr, rowClass;
                 
                 if (hasSchedule) {
-                    timeStr = scheduleMap.get(dayIndex);
+                    timeStr = scheduleMap.get(scheduleDay);
                     if (timeStr === '🚫 休息') {
                         statusStr = '🚫 未排班';
                         rowClass = 'off-day';
                     } else {
-                        // 修復：根據日期計算正確的工作狀態
+                        // 根據日期計算正確的工作狀態
                         const workStatus = determineWorkStatusForDate(timeStr, targetDate);
                         statusStr = workStatus.status;
                         rowClass = 'work-day';
@@ -489,9 +949,9 @@
                 
                 const row = document.createElement('tr');
                 row.className = rowClass;
-                row.setAttribute('data-day', dayIndex);
+                row.setAttribute('data-day', scheduleDay);
+                row.setAttribute('data-date', dateStr);
                 
-                // 將日期和星期的位置互換
                 row.innerHTML = `
                     <td><span class="schedule-date">${dateStr}</span></td>
                     <td>${dayName}</td>
@@ -522,25 +982,27 @@
             const today = new Date();
             const todayDateStr = `${today.getMonth() + 1}/${today.getDate()}`;
             
+            // 移除所有今天的高亮
             document.querySelectorAll('tr.today').forEach(row => {
                 row.classList.remove('today');
             });
             
+            // 尋找今天的日期並高亮
             let foundToday = false;
-            document.querySelectorAll('.schedule-date').forEach(dateEl => {
-                const dateStr = dateEl.textContent.trim();
-                if (dateStr === todayDateStr) {
-                    const row = dateEl.closest('tr');
-                    row.classList.add('today');
-                    foundToday = true;
+            document.querySelectorAll('#scheduleBody tr').forEach(row => {
+                const dateEl = row.querySelector('.schedule-date');
+                if (dateEl) {
+                    const dateStr = dateEl.textContent.trim();
+                    if (dateStr === todayDateStr) {
+                        row.classList.add('today');
+                        foundToday = true;
+                    }
                 }
             });
             
+            // 如果沒有找到今天的日期（可能是跨週的情況），不要強制高亮第一行
             if (!foundToday) {
-                const firstRow = document.querySelector('#scheduleBody tr');
-                if (firstRow) {
-                    firstRow.classList.add('today');
-                }
+                console.log(`今天日期 ${todayDateStr} 不在當前顯示的週內`);
             }
         }
 
@@ -565,33 +1027,47 @@
             const timeStr = now.toLocaleTimeString('zh-TW', {hour12: false, hour: '2-digit', minute: '2-digit'});
             
             let statusText = '';
-            let statusIcon = '';
             
             switch (workStatus.status) {
                 case '💼 上班中':
-                    statusIcon = '🟢';
-                    statusText = `現在狀態：上班中` ;
+                    statusText = `現在狀態：上班中`;
                     break;
                 case '⏳ 待上班':
-                    statusIcon = '🟡';  
-                    statusText = `現在狀態：待上班` ;
+                    statusText = `現在狀態：待上班`;
                     break;
                 case '👋 已下班':
-                    statusIcon = '🔴';
-                    statusText = `現在狀態：已下班` ;
+                    statusText = `現在狀態：已下班`;
                     break;
                 case '🚫 未排班':
-                    statusIcon = '⚫';
                     statusText = `現在狀態：今日休息`;
                     break;
                 default:
-                    statusIcon = '🟡';
                     statusText = `目前狀態：待上班`;
                     break;
             }
             
-            statusDisplay.textContent = `${statusIcon} ${statusText}`;
+            statusDisplay.innerHTML = `<span class="status-icon">${workStatus.icon}</span>${statusText}`;
             statusDisplay.className = `status-display ${workStatus.className}`;
+        }
+
+        // 創建水波紋效果
+        function createRipple(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'water-ripple';
+            ripple.style.left = e.clientX - 50 + 'px';
+            ripple.style.top = e.clientY - 50 + 'px';
+            ripple.style.width = '100px';
+            ripple.style.height = '100px';
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 4000);
+        }
+
+        // PDF 輸出功能（簡化版）
+        function generatePDF() {
+            window.print();
         }
 
         // 頁面載入時初始化
@@ -601,6 +1077,16 @@
             updateTodayStatus();
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
+            
+            // 添加點擊水波紋效果
+            document.addEventListener('click', createRipple);
+        });
+
+        // 添加頁面可見性變化監聽，當頁面重新獲得焦點時更新狀態
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateTodayStatus();
+            }
         });
     </script>
 </body>
