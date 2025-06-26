@@ -72,109 +72,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 水波紋效果 */
-        .water-ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, 
-                rgba(135, 206, 235, 0.6) 0%, 
-                rgba(173, 216, 230, 0.4) 30%, 
-                rgba(176, 224, 230, 0.2) 60%, 
-                transparent 100%);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            animation: ripple 2s ease-out infinite;
-            pointer-events: none;
-            box-shadow: 
-                0 0 20px rgba(135, 206, 235, 0.4),
-                inset 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .water-ripple-secondary {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, 
-                rgba(0, 191, 255, 0.3) 0%, 
-                rgba(135, 206, 235, 0.2) 50%, 
-                transparent 100%);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            animation: ripple-secondary 3s ease-out infinite;
-            pointer-events: none;
-            box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
-        }
-
-        .water-ripple-tertiary {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, 
-                rgba(255, 255, 255, 0.4) 0%, 
-                rgba(173, 216, 230, 0.2) 40%, 
-                transparent 100%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            animation: ripple-tertiary 4s ease-out infinite;
-            pointer-events: none;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(2);
-                opacity: 0.6;
-            }
-            100% {
-                transform: scale(6);
-                opacity: 0;
-            }
-        }
-
-        @keyframes ripple-secondary {
-            0% {
-                transform: scale(0);
-                opacity: 0.8;
-            }
-            30% {
-                transform: scale(1.5);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(8);
-                opacity: 0;
-            }
-        }
-
-        @keyframes ripple-tertiary {
-            0% {
-                transform: scale(0);
-                opacity: 0.6;
-            }
-            40% {
-                transform: scale(3);
-                opacity: 0.3;
-            }
-            100% {
-                transform: scale(10);
-                opacity: 0;
-            }
-        }
-
-        @keyframes droplet-fade {
-            0% {
-                transform: scale(1) translateY(0px);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.2) translateY(-10px);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(0.5) translateY(-20px);
-                opacity: 0;
-            }
-        }
-        
         .schedule-board {
             background: var(--glass-primary);
             backdrop-filter: blur(30px);
@@ -313,34 +210,6 @@
 
         .btn:active {
             transform: translateY(-2px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn:active::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: button-ripple 0.6s ease-out;
-        }
-
-        @keyframes button-ripple {
-            0% {
-                width: 0;
-                height: 0;
-                opacity: 1;
-            }
-            100% {
-                width: 200%;
-                height: 200%;
-                opacity: 0;
-            }
         }
         
         .status-display {
@@ -484,43 +353,6 @@
             transform: scale(1.02);
             box-shadow: 0 8px 25px rgba(0, 191, 255, 0.2);
             border-color: var(--glass-border-strong);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .schedule-table tr:hover td::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.4), 
-                transparent);
-            animation: table-wave 1.5s ease-in-out infinite;
-        }
-
-        @keyframes table-wave {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
-        }
-
-        @keyframes special-ripple {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(0.5);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0;
-            }
         }
         
         .today {
@@ -573,10 +405,6 @@
                 font-size: 12px;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
-            }
-            
-            .water-ripple, .water-ripple-secondary, .water-ripple-tertiary {
-                display: none !important;
             }
             
             .schedule-board {
@@ -1067,79 +895,6 @@
             statusDisplay.className = `status-display ${workStatus.className}`;
         }
 
-        // 創建增強的水波紋效果
-        function createRipple(e) {
-            // 主要漣漪
-            const ripple = document.createElement('div');
-            ripple.className = 'water-ripple';
-            const size = Math.random() * 50 + 100; // 100-150px隨機大小
-            ripple.style.left = (e.clientX - size/2) + 'px';
-            ripple.style.top = (e.clientY - size/2) + 'px';
-            ripple.style.width = size + 'px';
-            ripple.style.height = size + 'px';
-            document.body.appendChild(ripple);
-            
-            // 次要漣漪（稍微延遲）
-            setTimeout(() => {
-                const ripple2 = document.createElement('div');
-                ripple2.className = 'water-ripple-secondary';
-                const size2 = size * 0.8;
-                ripple2.style.left = (e.clientX - size2/2) + 'px';
-                ripple2.style.top = (e.clientY - size2/2) + 'px';
-                ripple2.style.width = size2 + 'px';
-                ripple2.style.height = size2 + 'px';
-                document.body.appendChild(ripple2);
-                
-                setTimeout(() => {
-                    ripple2.remove();
-                }, 3000);
-            }, 200);
-            
-            // 第三層漣漪（更微妙）
-            setTimeout(() => {
-                const ripple3 = document.createElement('div');
-                ripple3.className = 'water-ripple-tertiary';
-                const size3 = size * 1.2;
-                ripple3.style.left = (e.clientX - size3/2) + 'px';
-                ripple3.style.top = (e.clientY - size3/2) + 'px';
-                ripple3.style.width = size3 + 'px';
-                ripple3.style.height = size3 + 'px';
-                document.body.appendChild(ripple3);
-                
-                setTimeout(() => {
-                    ripple3.remove();
-                }, 4000);
-            }, 400);
-            
-            // 添加小水滴效果
-            for(let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    const droplet = document.createElement('div');
-                    droplet.style.cssText = `
-                        position: absolute;
-                        width: ${Math.random() * 8 + 4}px;
-                        height: ${Math.random() * 8 + 4}px;
-                        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(135,206,235,0.4) 100%);
-                        border-radius: 50%;
-                        left: ${e.clientX + (Math.random() - 0.5) * 60}px;
-                        top: ${e.clientY + (Math.random() - 0.5) * 60}px;
-                        pointer-events: none;
-                        animation: droplet-fade 1.5s ease-out forwards;
-                        box-shadow: 0 0 10px rgba(135,206,235,0.3);
-                    `;
-                    document.body.appendChild(droplet);
-                    
-                    setTimeout(() => {
-                        droplet.remove();
-                    }, 1500);
-                }, i * 100);
-            }
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 2000);
-        }
-
         // PDF 輸出功能（簡化版）
         function generatePDF() {
             window.print();
@@ -1152,43 +907,6 @@
             updateTodayStatus();
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
-            
-            // 添加點擊水波紋效果
-            document.addEventListener('click', createRipple);
-            
-            // 為特定元素添加增強的點擊效果
-            document.querySelectorAll('.btn, .status-display, .current-time').forEach(element => {
-                element.addEventListener('click', function(e) {
-                    // 創建特殊的金色漣漪效果
-                    const specialRipple = document.createElement('div');
-                    specialRipple.style.cssText = `
-                        position: absolute;
-                        border-radius: 50%;
-                        background: radial-gradient(circle, 
-                            rgba(255, 215, 0, 0.6) 0%, 
-                            rgba(255, 223, 0, 0.4) 30%, 
-                            rgba(255, 235, 59, 0.2) 60%, 
-                            transparent 100%);
-                        border: 2px solid rgba(255, 215, 0, 0.8);
-                        pointer-events: none;
-                        animation: special-ripple 1s ease-out forwards;
-                        box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
-                    `;
-                    
-                    const rect = element.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height) * 2;
-                    specialRipple.style.left = (e.clientX - size/2) + 'px';
-                    specialRipple.style.top = (e.clientY - size/2) + 'px';
-                    specialRipple.style.width = size + 'px';
-                    specialRipple.style.height = size + 'px';
-                    
-                    document.body.appendChild(specialRipple);
-                    
-                    setTimeout(() => {
-                        specialRipple.remove();
-                    }, 1000);
-                });
-            });
         });
 
         // 添加頁面可見性變化監聽，當頁面重新獲得焦點時更新狀態
