@@ -66,18 +66,21 @@
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 30px;
             margin-bottom: 50px;
         }
 
         .info-card {
             background: rgba(255,255,255,0.95);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             backdrop-filter: blur(10px);
+            height: 280px;
+            display: flex;
+            flex-direction: column;
         }
 
         .info-card:hover {
@@ -87,11 +90,34 @@
 
         .info-card h3 {
             color: #667eea;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .info-card .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .info-card p {
+            margin-bottom: 10px;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .info-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .icon {
+            font-size: 1.5rem;
         }
 
         .icon {
@@ -280,12 +306,58 @@
             50% { opacity: 0.8; }
         }
 
+        .weather-section {
+            margin-bottom: 40px;
+        }
+
         .weather-widget {
             background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
             color: white;
-            padding: 20px;
-            border-radius: 15px;
+            padding: 30px;
+            border-radius: 20px;
             text-align: center;
+            box-shadow: 0 15px 35px rgba(116, 185, 255, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .weather-widget h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .weather-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .temp-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .temp {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .season {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .weather-tip {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
         }
 
         .footer {
@@ -308,6 +380,20 @@
             .info-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .info-card {
+                height: auto;
+                min-height: 220px;
+                padding: 20px;
+            }
+            
+            .info-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .info-card p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -325,30 +411,43 @@
         <div class="info-grid">
             <div class="info-card">
                 <h3><span class="icon">✈️</span>航班資訊</h3>
-                <p><strong>去程：</strong>IT232 | 1/7 18:20→20:40 | 座位2A</p>
-                <p><strong>回程：</strong>IT231 | 1/11 09:45→10:20 | 座位2A | 25kg行李</p>
+                <div class="content">
+                    <p><strong>去程：</strong>IT232 | 1/7 18:20→20:40 | 座位2A</p>
+                    <p><strong>回程：</strong>IT231 | 1/11 09:45→10:20 | 座位2A | 25kg行李</p>
+                </div>
             </div>
 
             <div class="info-card">
                 <h3><span class="icon">🏨</span>住宿資訊</h3>
-                <p><strong>飯店：</strong>Almont Hotel Naha Omoromachi</p>
-                <p><strong>位置：</strong>新都心商圈，步行至DFS、3A百貨</p>
-                <p><strong>交通：</strong>鄰近おもろまち單軌站</p>
+                <div class="content">
+                    <p><strong>飯店：</strong>Almont Hotel Naha Omoromachi</p>
+                    <p><strong>位置：</strong>新都心商圈，步行至DFS、3A百貨</p>
+                    <p><strong>交通：</strong>鄰近おもろまち單軌站</p>
+                </div>
             </div>
 
             <div class="info-card">
                 <h3><span class="icon">🚗</span>租車資訊</h3>
-                <p><strong>公司：</strong>HV RENT A CAR 小祿站分店</p>
-                <p><strong>時間：</strong>1/8 09:00取車 → 1/9 18:00還車</p>
-                <p><strong>車型：</strong>輕型ROOX 4人座，禁菸車</p>
-                <p><strong>配備：</strong>藍牙多語導航、倒車鏡頭</p>
+                <div class="content">
+                    <p><strong>公司：</strong>HV RENT A CAR 小祿站分店</p>
+                    <p><strong>時間：</strong>1/8 09:00取車 → 1/9 18:00還車</p>
+                    <p><strong>車型：</strong>輕型ROOX 4人座，禁菸車</p>
+                </div>
             </div>
+        </div>
 
-            <div class="info-card weather-widget">
+        <div class="weather-section">
+            <div class="weather-widget">
                 <h3><span class="icon">🌤️</span>天氣預報</h3>
-                <p><strong>氣溫：</strong>16-22°C</p>
-                <p><strong>建議：</strong>攜帶輕薄外套</p>
-                <p>沖繩冬季溫和舒適，適合觀光購物</p>
+                <div class="weather-content">
+                    <div class="temp-info">
+                        <span class="temp">16-22°C</span>
+                        <span class="season">沖繩冬季溫和舒適</span>
+                    </div>
+                    <div class="weather-tip">
+                        <strong>建議攜帶：</strong>輕薄外套，適合觀光購物
+                    </div>
+                </div>
             </div>
         </div>
 
